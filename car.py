@@ -15,7 +15,8 @@ class Car(object):
         # TODO: Spawn internal thread which calls update_status in a loop.
     
 
-    def update_status(self, time_since_last_update=0.1):
+    # Automatically updates the internal status of the car.
+    def __update_status__(self, time_since_last_update=0.1):
         # Update position (based on velocity)
         self.road_position += velocity * time_since_last_update
         if self.road_position == self.road.length:
