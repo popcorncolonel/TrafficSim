@@ -1,5 +1,5 @@
 from car import Car
-
+from math import sqrt
 
 class Road(object):
     '''
@@ -7,11 +7,12 @@ class Road(object):
     Start is an Intersection.
     End is an Intersection.
     '''
-    def __init__(self, length=100.0, start=None, end=None):
+    def __init__(self, start, end):
         self.cars = []
-        self.length = length
 
         self.start = start
         self.end = end
+
+        self.length = math.sqrt((end.y-start.y)^2 + (end.x-start.x)^2)
 
 
