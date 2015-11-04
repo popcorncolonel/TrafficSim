@@ -9,3 +9,4 @@ class Vertex(object):
 
     def add_incoming_edge(self, edge):
         self.incoming_edge_set.add(edge)
+

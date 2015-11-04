@@ -1,6 +1,8 @@
 class Edge(object):
     def __init__(self, start_point, end_point):
-        start_point.add_edge(self)
+        start_point.add_outgoing_edge(self)
         self.start_point = start_point
-        end_point.add_edge(self)
+
+        end_point.add_incoming_edge(self)
         self.end_point = end_point
+
