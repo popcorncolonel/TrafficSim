@@ -9,10 +9,19 @@ class Car(object):
         self.road = road # Road object.
         self.road_position = init_road_progress # In feet.
         self.destination = destination # Destination object.
+        # TODO: calculate list of roads to go on to get to the
+        #       destination (dijkstra)
+
+        # TODO: spawn internal thread which calls update_status in a loop
     
-    def update(self):
-        # Update position
-        # Update velocity (based on velocity)
+    def update_status(self, time_since_last_update=0.1):
+        # Update position (based on velocity)
+        position += velocity * time_since_last_update
+        if self.road_position == self.road.length:
+            print 'uh oh'
+
+        # Update velocity (based on acceleration)
+        velocity += acceleration * time_since_last_update
         pass
 
     def update_acceleration(self, acceleration):

@@ -1,5 +1,4 @@
 from edge import Edge
-from car import Car
 from math import sqrt
 
 class Road(Edge):
