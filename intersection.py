@@ -4,7 +4,7 @@ import threading
 # Intersections are the base Nodes to convey location.
 class Intersection(Vertex):
     '''
-    x and y are in Feet
+    x and y are in Feet.
     '''
     def __init__(self, x, y, outgoing_roads=[], incoming_roads=[]):
         Vertex.__init__(incoming_edge_set=incoming_roads, 

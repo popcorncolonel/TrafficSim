@@ -1,5 +1,3 @@
-from road import Road
-
 class Car(object):
     def __init__(self, road, init_road_progress=0.0, destination=None):
         # Physics stuff.
@@ -9,7 +7,15 @@ class Car(object):
 
         # Car metadata.
         self.road = road # Road object.
-        self.road_progress = init_road_progress # In feet.
+        self.road_position = init_road_progress # In feet.
         self.destination = destination # Destination object.
+    
+    def update(self):
+        # Update position
+        # Update velocity (based on velocity)
+        pass
 
+    def update_acceleration(self, acceleration):
+        # Initially instantaneous acceleration.
+        self.acceleration = acceleration
 
