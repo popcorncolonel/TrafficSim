@@ -1,4 +1,8 @@
+""" Handles graphics via pygame.
 
+    Provides a Window class, for opening a window for the graphics display,
+    and a Sprite class, for images to be drawn on that display.
+"""
 import os, sys
 import pygame
 from pygame.locals import *
@@ -21,6 +25,10 @@ def load_image(name, colorkey=None):
 
 
 class Window:
+    """ Represents a window, containing sprites, presented to the user.
+        The window should be refreshed when one wishes to show sprite updates
+        to the user.
+    """
     def __init__(self, width=320, height=240):
         self.width = 0
         self.height = 0
@@ -41,6 +49,9 @@ class Window:
 
 
 class Sprite(pygame.sprite.Sprite):
+    """ Represents one moveable object that can be potentially displayed to
+        the user.
+    """
     def __init__(self, imagePath, rect=None):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_image(imagePath, -1)
