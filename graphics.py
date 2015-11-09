@@ -36,7 +36,7 @@ class Window:
         self.screen = pygame.display.set_mode(size)
         self.sprites = []
 
-    def addSprite(self, sprite):
+    def add_sprite(self, sprite):
         sprite = pygame.sprite.RenderPlain((sprite))
         self.sprites.append(sprite)
 
@@ -54,9 +54,25 @@ class Sprite(pygame.sprite.Sprite):
     """
     def __init__(self, imagePath, rect=None):
         pygame.sprite.Sprite.__init__(self)
+        self.degrees = 0
         self.image, self.rect = load_image(imagePath, -1)
         if rect is not None:
-            self.rect = rect
+            self.scale(rect);
+
+        # self.image = pygame.transform.scale(self.image, (w, h))
+        # self.image = pygame.transform.rotate(self.image, angle)
 
     def move(self, x=0, y=0):
         self.rect.move_ip(x, y)
+
+    def scale(self, rect):
+        self.rect.size = rect;
+        self.image = pygame.transform.scale(self.image, rect)
+
+    def set_angle(self, degrees):
+        change = self.degrees - degrees
+        self.rotate(change)
+
+    def rotate(self, degrees):
+        self.image = pygame.transform.rotate(self.image, change)
+        self.degrees += degrees
