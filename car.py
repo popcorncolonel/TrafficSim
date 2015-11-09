@@ -12,24 +12,40 @@ class Car(object):
         # TODO: Calculate list of roads to go on to get to the
         #       destination (dijkstra).
 
+        # car in front of this car on the road
+        self.next_car = None
+        # car behind this car on the road
+        self.prev_car = None
+
         # TODO: Spawn internal thread which calls update_status in a loop.
     
 
     # Automatically updates the internal status of the car.
     def __update_status__(self, time_since_last_update=0.1):
-        # Update position (based on velocity)
-        self.road_position += velocity * time_since_last_update
-        if self.road_position == self.road.length:
-            print 'uh oh' 
- 
-        # Update velocity (based on acceleration)
-        self.velocity += self.acceleration * time_since_last_update
+        def update_velocity():
+            # Update position (based on velocity)
+            self.road_position += velocity * time_since_last_update
+            if self.road_position == self.road.length:
+                print 'uh oh' 
+     
+            # Update velocity (based on acceleration)
+            self.velocity += self.acceleration * time_since_last_update
 
-        # Slow down before intersections.
-        dist_to_finish = self.road.length - self.road_position
-        if dist_to_finish < 100.0: # TODO: change this to be a reasonable percent
+        def update_dist():
+            # Slow down before intersections.
+            dist_to_finish = self.road.length - self.road_position
+            if dist_to_finish < 100.0: # TODO: change this to be a reasonable percent
+                pass
+                # start slowing down
+
+        def update_adjacent_cars():
+            # TODO: update the prev/next cars
             pass
-            # start slowing down
+
+        update_velocity()
+        update_dist()
+        update_adjacent_cars()
+
 
 
     # Initially instantaneous acceleration.
