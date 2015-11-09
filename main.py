@@ -12,11 +12,12 @@ def main():
     w.addSprite(s)
     w.refresh()
     x = y = 0
-    while True:
-        s.move(x=5)
-        w.refresh()
-        time.sleep(0.01)
-    print ':)'
+
+    intersection1 = Intersection(10, 30)
+    intersection2 = Intersection(100, 300)
+    road = Road(intersection1, intersection2)
+    car = Car(road)
+    road.add_car(car)
 
 if __name__ == '__main__':
     main()
