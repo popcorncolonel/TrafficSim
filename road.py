@@ -11,7 +11,7 @@ class Road(Edge):
         self.cars = cars
 
         self.length = math.sqrt((end.y-start.y)^2 + (end.x-start.x)^2)
-        self.angle = math.atan((end.y - start.y) / (end.x - start.x)) * 180 / math.pi
+        self.angle = math.atan((end.y - start.y) / (end.x - start.x)) * 180.0 / math.pi
     
     def add_car(self, car):
         self.cars.append(car)
