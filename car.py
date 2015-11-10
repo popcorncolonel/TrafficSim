@@ -1,5 +1,5 @@
 class Car(object):
-    def __init__(self, road, init_road_progress=0.0, destination=None):
+    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None):
         # Physics stuff.
         self.velocity = 0.0
         self.acceleration = 0.0
@@ -16,6 +16,8 @@ class Car(object):
         self.next_car = None
         # car behind this car on the road
         self.prev_car = None
+
+        self.onchange = onchange
 
         # TODO: Spawn internal thread which calls update_status in a loop.
     
@@ -46,6 +48,7 @@ class Car(object):
         update_dist()
         update_adjacent_cars()
 
+        self.onchange(self)
 
 
     # Initially instantaneous acceleration.

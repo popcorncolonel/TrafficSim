@@ -1,5 +1,5 @@
 from edge import Edge
-from math import sqrt
+import math
 
 class Road(Edge):
     '''
@@ -7,10 +7,11 @@ class Road(Edge):
     end is an Intersection.
     '''
     def __init__(self, start, end, cars=[]):
-        Edge.__init__(start, end)
+        Edge.__init__(self, start, end)
         self.cars = cars
 
         self.length = math.sqrt((end.y-start.y)^2 + (end.x-start.x)^2)
+        self.angle = math.atan((end.y - start.y) / (end.x - start.x)) * 180 / math.pi
     
     def add_car(self, car):
         self.cars.append(car)

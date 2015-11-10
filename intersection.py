@@ -7,7 +7,7 @@ class Intersection(Vertex):
     x and y are in Feet.
     '''
     def __init__(self, x, y, outgoing_roads=[], incoming_roads=[]):
-        Vertex.__init__(incoming_edge_set=incoming_roads, 
+        Vertex.__init__(self, incoming_edge_set=incoming_roads, 
                         outgoing_edge_set=outgoing_roads)
         self.x = x
         self.y = y
