@@ -30,13 +30,14 @@ class Window:
         to the user.
     """
     def __init__(self, width=320, height=240):
-        self.width = 0
-        self.height = 0
+        self.width = width
+        self.height = height
         size = self.width, self.height
         self.screen = pygame.display.set_mode(size)
         self.sprites = []
 
     def add_sprite(self, sprite):
+        sprite.move(y=-1 * self.height)
         sprite = pygame.sprite.RenderPlain((sprite))
         self.sprites.append(sprite)
 

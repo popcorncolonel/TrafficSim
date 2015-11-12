@@ -15,7 +15,6 @@ class Master:
 
         def onchange(car):
             degs = car.road.angle
-            print degs
             s.set_angle(degs)
             angle_rads = degs * math.pi / 180.0
             v = car.velocity

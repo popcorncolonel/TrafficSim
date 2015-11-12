@@ -14,7 +14,7 @@ SLOW = 'red-car-slow.png'
 GOLDEN_RATIO = 1.61803398874989484820458683436563811772030917980576286213544862270526046281890
 
 def main():
-    w = Window(100, 100)
+    w = Window(400, 400)
 
     master = Master()
 
