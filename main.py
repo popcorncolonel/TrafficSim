@@ -8,8 +8,9 @@ from graphics import *
 from master import Master
 import time
 
-FAST = 'red-car.png'
-SLOW = 'red-car-slow.png'
+fast_img = 'red-car.png'
+slow_img = 'red-car-slow.png'
+intersection_img = 'intersection.png'
 
 GOLDEN_RATIO = 1.61803398874989484820458683436563811772030917980576286213544862270526046281890
 
@@ -18,13 +19,16 @@ def main():
 
     master = Master()
 
-    intersection1 = Intersection(10, 30)
-    intersection2 = Intersection(100, 300)
+    intersection1, sprite1 = master.setup_intersection(10, 30, slow_img, (20, 20))
+    intersection2, sprite2 = master.setup_intersection(100, 300, slow_img, (20, 20))
     road = Road(intersection1, intersection2)
 
-    car, s = master.setup_car(road, FAST, (int(20 * GOLDEN_RATIO), 20))
-    w.add_sprite(s)
+    car, s = master.setup_car(road, fast_img, (int(20 * GOLDEN_RATIO), 20))
     road.add_car(car)
+
+    w.add_sprite(s)
+    w.add_sprite(sprite1)
+    w.add_sprite(sprite2)
 
     car.set_acceleration(50)
     i=0

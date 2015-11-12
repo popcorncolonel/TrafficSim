@@ -1,4 +1,6 @@
 from graphics import *
+from road import Road
+from intersection import Intersection
 from car import Car
 import math
 
@@ -24,3 +26,11 @@ class Master:
 
         c = Car(road, onchange=onchange)
         return c, s
+
+    def setup_intersection(self, x, y, image, size):
+        s = Sprite(image, size)
+        s.move(x=x, y=y)
+
+        i = Intersection(x, y)
+        return i, s
+
