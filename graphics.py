@@ -63,8 +63,17 @@ class Sprite(pygame.sprite.Sprite):
         # self.image = pygame.transform.scale(self.image, (w, h))
         # self.image = pygame.transform.rotate(self.image, angle)
 
+    def move_to(self, x=None, y=None):
+        if x is None:
+            x = self.rect[0]
+        if y is None:
+            y = self.rect[1]
+        x_delta = x - self.rect[0]
+        y_delta = y - self.rect[1]
+        self.move(x=round(x_delta), y=round(y_delta))
+
     def move(self, x=0, y=0):
-        self.rect.move_ip(x, -1 * y)
+        self.rect.move_ip(x, y)
 
     def scale(self, rect):
         self.rect.size = rect;
