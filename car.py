@@ -40,8 +40,8 @@ class Car(object):
             # Update position (based on velocity)
             self.road_position += self.velocity * time_since_last_update
             if self.road_position == self.road.length:
-                print 'uh oh' 
-     
+                print 'uh oh'
+
             # Update velocity (based on acceleration)
             self.velocity += self.acceleration * time_since_last_update
 
