@@ -26,7 +26,7 @@ class Car(object):
     def __update_status__(self, time_since_last_update=0.1):
         def update_velocity():
             # Update position (based on velocity)
-            self.road_position += velocity * time_since_last_update
+            self.road_position += self.velocity * time_since_last_update
             if self.road_position == self.road.length:
                 print 'uh oh' 
      
