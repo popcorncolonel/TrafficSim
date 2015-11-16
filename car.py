@@ -1,3 +1,7 @@
+import time
+import datetime
+from threading import Thread
+
 class Car(object):
     def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None):
         # Physics stuff.
@@ -19,8 +23,16 @@ class Car(object):
 
         self.onchange = onchange
 
-        # TODO: Spawn internal thread which calls update_status in a loop.
-    
+        self.last_time = datetime.datetime.now()
+
+        self.internal_thread = Thread(target=self.loop)
+        self.internal_thread.start()
+
+    def loop(self):
+        while True:
+            time_elapsed = (datetime.datetime.now() - self.last_time).total_seconds()
+            self.__update_status__(time_elapsed)
+            self.last_time = datetime.datetime.now()
 
     # Automatically updates the internal status of the car.
     def __update_status__(self, time_since_last_update=0.1):

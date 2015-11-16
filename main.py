@@ -21,7 +21,7 @@ def main():
     master = Master()
 
     intersection1, sprite1 = master.setup_intersection(30, 100, slow_img, (30, 30))
-    intersection2, sprite2 = master.setup_intersection(420, 400, slow_img, (30, 30))
+    intersection2, sprite2 = master.setup_intersection(420, 420, slow_img, (30, 30))
     road = Road(intersection1, intersection2)
     other_lane = Road(intersection2, intersection1)
 
@@ -39,12 +39,7 @@ def main():
 
     car.velocity = 100
     car2.velocity = 50
-    last_time = datetime.datetime.now()
     while True:
-        time_elapsed = (datetime.datetime.now() - last_time).total_seconds()
-        car.__update_status__(time_elapsed)
-        car2.__update_status__(time_elapsed)
-        last_time = datetime.datetime.now()
         w.refresh()
         time.sleep(0.01)
 
