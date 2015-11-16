@@ -25,6 +25,7 @@ def load_image(name, colorkey=None):
     return image, image.get_rect()
 
 
+graphics_lock = threading.Lock()
 class Window:
     """ Represents a window, containing sprites, presented to the user.
         The window should be refreshed when one wishes to show sprite updates
@@ -43,14 +44,15 @@ class Window:
         self.sprites.append(sprite)
 
     def refresh(self):
+        graphics_lock.acquire()
         self.screen.fill((0, 0, 0))   # overwrite previous frame
         for sprite in self.sprites:
             sprite.draw(self.screen)
         pygame.display.flip()         # Send to the screen
+        graphics_lock.release()
 
 
 
-move_lock = threading.Lock()
 class Sprite(pygame.sprite.Sprite):
     """ Represents one moveable object that can be potentially displayed to
         the user.
@@ -75,9 +77,9 @@ class Sprite(pygame.sprite.Sprite):
         self.move(x=round(x_delta), y=round(y_delta))
 
     def move(self, x=0, y=0):
-        move_lock.acquire()
+        #move_lock.acquire()
         self.rect.move_ip(x, y)
-        move_lock.release()
+        #move_lock.release()
 
     def scale(self, rect):
         self.rect.size = rect;
