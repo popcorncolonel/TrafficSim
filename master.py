@@ -17,3 +17,6 @@ def setup_car(road, image, size):
 
     c = Car(road, onchange=onchange)
     return c
+
+def setup_road(start, stop):
+    pass

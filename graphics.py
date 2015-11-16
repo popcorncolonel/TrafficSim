@@ -57,7 +57,7 @@ class Sprite(pygame.sprite.Sprite):
         self.degrees = 0
         self.image, self.rect = load_image(imagePath, -1)
         if rect is not None:
-            self.scale(rect);
+            self.scale(rect)
 
         # self.image = pygame.transform.scale(self.image, (w, h))
         # self.image = pygame.transform.rotate(self.image, angle)
