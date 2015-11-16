@@ -44,12 +44,11 @@ class Window:
         self.sprites.append(sprite)
 
     def refresh(self):
-        graphics_lock.acquire()
         self.screen.fill((0, 0, 0))   # overwrite previous frame
         for sprite in self.sprites:
+            sprite.image.unlock()
             sprite.draw(self.screen)
         pygame.display.flip()         # Send to the screen
-        graphics_lock.release()
 
 
 
