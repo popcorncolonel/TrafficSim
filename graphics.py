@@ -6,6 +6,7 @@
 import os, sys
 import pygame
 from pygame.locals import *
+import threading
 
 pygame.init()
 
@@ -49,6 +50,7 @@ class Window:
 
 
 
+move_lock = threading.Lock()
 class Sprite(pygame.sprite.Sprite):
     """ Represents one moveable object that can be potentially displayed to
         the user.
@@ -73,7 +75,9 @@ class Sprite(pygame.sprite.Sprite):
         self.move(x=round(x_delta), y=round(y_delta))
 
     def move(self, x=0, y=0):
+        move_lock.acquire()
         self.rect.move_ip(x, y)
+        move_lock.release()
 
     def scale(self, rect):
         self.rect.size = rect;
