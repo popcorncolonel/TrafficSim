@@ -26,7 +26,6 @@ def main():
     other_lane = Road(intersection2, intersection1)
 
     car, s = master.setup_car(road, fast_img, (int(30 * GOLDEN_RATIO), 30))
-    # todo: make this car go in the right direction
     car2, s2 = master.setup_car(other_lane, slow_img, (int(30 * GOLDEN_RATIO), 30))
 
     road.add_car(car)
