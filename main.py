@@ -19,14 +19,15 @@ def main():
     master = Master(800, 800)
 
     # TODO: why won't intersection.png work?
-    intersection1 = master.setup_intersection(30, 50, 'intersection.png', (30, 30))
-    intersection2 = master.setup_intersection(30, 400, 'intersection.png', (30, 30))
-    intersection3 = master.setup_intersection(400, 50, 'intersection.png', (30, 30))
+    intersection1 = master.setup_intersection(100, 100, 'intersection.png', (30, 30))
+    intersection2 = master.setup_intersection(100, 500, 'intersection.png', (30, 30))
+    intersection3 = master.setup_intersection(500, 100, 'intersection.png', (30, 30))
 
     road = Road(intersection1, intersection2)
     other_lane = Road(intersection2, intersection1)
 
     road2 = Road(intersection2, intersection3)
+    road3 = Road(intersection3, intersection1)
 
     car = master.setup_car(road, fast_img, (int(30 * GOLDEN_RATIO), 30))
     car2 = master.setup_car(other_lane, slow_img, (int(30 * GOLDEN_RATIO), 30))
