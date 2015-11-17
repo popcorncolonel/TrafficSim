@@ -20,7 +20,7 @@ def main():
 
     # TODO: why won't intersection.png work?
     intersection1 = master.setup_intersection(30, 50, 'road.png', (30, 30))
-    intersection2 = master.setup_intersection(200, 100, 'road.png', (30, 30))
+    intersection2 = master.setup_intersection(400, 400, 'road.png', (30, 30))
     road = Road(intersection1, intersection2)
     other_lane = Road(intersection2, intersection1)
 
@@ -30,9 +30,11 @@ def main():
     road.add_car(car)
     other_lane.add_car(car2)
 
-    # TODO: why do these have to be so fast?
-    car.velocity = 1000
-    car2.velocity = 500
+    car.velocity = 100
+    car2.velocity = 50
+
+    car.acceleration = -5
+    car2.acceleration = 50
 
     master.run_simulation()
 

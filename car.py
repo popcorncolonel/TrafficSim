@@ -33,6 +33,7 @@ class Car(object):
             time_elapsed = (datetime.datetime.now() - self.last_time).total_seconds()
             self.__update_status__(time_elapsed)
             self.last_time = datetime.datetime.now()
+            time.sleep(0.05)
 
     # Automatically updates the internal status of the car.
     def __update_status__(self, time_since_last_update=0.1):
@@ -40,7 +41,10 @@ class Car(object):
             # Update position (based on velocity)
             self.road_position += self.velocity * time_since_last_update
             if self.road_position == self.road.length:
-                print 'uh oh'
+                print 'uh oh' # deal with intersection
+
+            if self.road_position > self.road.length:
+                self.road_position = self.road.length
 
             # Update velocity (based on acceleration)
             self.velocity += self.acceleration * time_since_last_update
@@ -48,7 +52,14 @@ class Car(object):
         def update_dist():
             # Slow down before intersections.
             dist_to_finish = self.road.length - self.road_position
-            if dist_to_finish < 100.0: # TODO: change this to be a reasonable percent
+            if self.velocity == 0.0:
+                time_to_finish = float('inf')
+            else:
+                time_to_finish = dist_to_finish / self.velocity
+            if time_to_finish < 2.0:
+                self.acceleration = -0.5 * self.velocity
+                if self.velocity <= 20:
+                    self.acceleration = 0
                 pass
                 # start slowing down
 

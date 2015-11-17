@@ -15,8 +15,8 @@ class Master:
 
     def loop(self):
         while True:
-            #time.sleep(0.05)
             self.refresh()
+            time.sleep(0.05)
 
     def refresh(self):
         for obj in self.objects:

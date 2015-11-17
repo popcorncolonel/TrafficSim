@@ -25,9 +25,6 @@ def load_image(name, colorkey=None):
     return image, image.get_rect()
 
 
-graphics_lock = threading.Lock()
-import time
-import random
 class Window:
     """ Represents a window, containing sprites, presented to the user.
         The window should be refreshed when one wishes to show sprite updates
@@ -39,18 +36,25 @@ class Window:
         size = self.width, self.height
         self.screen = pygame.display.set_mode(size)
         self.groups = []
+        self.background = pygame.Surface((150,150))
 
     def add_sprite(self, sprite):
         sprite = pygame.sprite.RenderPlain((sprite))
         self.groups.append(sprite)
 
     def refresh(self):
-        self.screen.fill((0, 0, 0))   # overwrite previous frame
+        self.screen.fill((0, 0, 0))   # Overwrite previous frame.
         for group in self.groups:
             for sprite in group.sprites():
-                sprite.image.unlock() # The dest was blocked. Not the screen.
+                sprite.image.unlock() # The dest was locked. Not the screen.
                                       # thx http://ideone.com/fork/pmakPQ
-            group.draw(self.screen)
+            self.screen.unlock()
+            try:
+                group.draw(self.screen)
+            except Exception as e:
+                pass # Very occasionally, Pygame will throw the blit error.
+                     #   We can afford to not draw the sprite once every 1000
+                     #   updates, however.
         pygame.display.flip()         # Send to the screen
 
 
@@ -82,9 +86,7 @@ class Sprite(pygame.sprite.Sprite):
         self.move(x=round(x_delta), y=round(y_delta))
 
     def move(self, x=0, y=0):
-        #move_lock.acquire()
         self.rect.move_ip(x, y)
-        #move_lock.release()
 
     def scale(self, rect):
         self.rect.size = rect;
