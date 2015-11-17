@@ -18,8 +18,9 @@ GOLDEN_RATIO = 1.618033988749894848204586834365638117720309179805762862135448622
 def main():
     master = Master()
 
-    intersection1 = master.setup_intersection(30, 50, intersection_img, (30, 30))
-    intersection2 = master.setup_intersection(200, 100, intersection_img, (30, 30))
+    # TODO: why won't intersection.png work?
+    intersection1 = master.setup_intersection(30, 50, 'road.png', (30, 30))
+    intersection2 = master.setup_intersection(200, 100, 'road.png', (30, 30))
     road = Road(intersection1, intersection2)
     other_lane = Road(intersection2, intersection1)
 
@@ -29,11 +30,11 @@ def main():
     road.add_car(car)
     other_lane.add_car(car2)
 
-    car.velocity = 100
-    car2.velocity = 50
-    while True:
-        master.refresh()
-        time.sleep(0.01)
+    # TODO: why do these have to be so fast?
+    car.velocity = 1000
+    car2.velocity = 500
+
+    master.run_simulation()
 
 if __name__ == '__main__':
     main()

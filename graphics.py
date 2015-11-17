@@ -26,45 +26,51 @@ def load_image(name, colorkey=None):
 
 
 graphics_lock = threading.Lock()
+import time
+import random
 class Window:
     """ Represents a window, containing sprites, presented to the user.
         The window should be refreshed when one wishes to show sprite updates
         to the user.
     """
-    def __init__(self, width=320, height=240):
+    def __init__(self, width=800, height=400):
         self.width = width
         self.height = height
         size = self.width, self.height
         self.screen = pygame.display.set_mode(size)
-        self.sprites = []
+        self.groups = []
 
     def add_sprite(self, sprite):
-        sprite.move(y=-1 * self.height)
         sprite = pygame.sprite.RenderPlain((sprite))
-        self.sprites.append(sprite)
+        self.groups.append(sprite)
 
     def refresh(self):
         self.screen.fill((0, 0, 0))   # overwrite previous frame
-        for sprite in self.sprites:
-            sprite.image.unlock()
-            sprite.draw(self.screen)
+        for group in self.groups:
+            for sprite in group.sprites():
+                sprite.image.unlock() # The dest was blocked. Not the screen.
+                                      # thx http://ideone.com/fork/pmakPQ
+            group.draw(self.screen)
         pygame.display.flip()         # Send to the screen
-
 
 
 class Sprite(pygame.sprite.Sprite):
     """ Represents one moveable object that can be potentially displayed to
         the user.
     """
-    def __init__(self, imagePath, rect=None):
+    def __init__(self, image_path, rect=None):
         pygame.sprite.Sprite.__init__(self)
         self.degrees = 0.0
-        self.image, self.rect = load_image(imagePath, -1)
+        self.image, self.rect = load_image(image_path, -1)
         if rect is not None:
             self.scale(rect)
+        self.image_path = image_path
 
-        # self.image = pygame.transform.scale(self.image, (w, h))
-        # self.image = pygame.transform.rotate(self.image, angle)
+    def __repr__(self):
+        return self.image_path
+
+    def __str__(self):
+        return self.__repr__()
 
     def move_to(self, x=None, y=None):
         if x is None:
