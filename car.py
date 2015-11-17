@@ -1,4 +1,5 @@
 import time
+import random
 import datetime
 from threading import Thread
 
@@ -43,8 +44,12 @@ class Car(object):
             if self.road_position == self.road.length:
                 print 'uh oh' # deal with intersection
 
-            if self.road_position > self.road.length:
-                self.road_position = self.road.length
+            if self.road_position >= self.road.length:
+                if len(self.road.end_point.outgoing_edge_set) != 0:
+                    self.road = random.sample(self.road.end_point.outgoing_edge_set, 1)[0]
+                    self.road_position = 0.0
+                else:
+                    self.road_position = self.road.length
 
             # Update velocity (based on acceleration)
             self.velocity += self.acceleration * time_since_last_update

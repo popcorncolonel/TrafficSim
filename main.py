@@ -16,19 +16,20 @@ intersection_img = 'intersection.png'
 GOLDEN_RATIO = 1.61803398874989484820458683436563811772030917980576286213544862270526046281890
 
 def main():
-    master = Master()
+    master = Master(800, 800)
 
     # TODO: why won't intersection.png work?
-    intersection1 = master.setup_intersection(30, 50, 'road.png', (30, 30))
-    intersection2 = master.setup_intersection(400, 400, 'road.png', (30, 30))
+    intersection1 = master.setup_intersection(30, 50, 'intersection.png', (30, 30))
+    intersection2 = master.setup_intersection(30, 400, 'intersection.png', (30, 30))
+    intersection3 = master.setup_intersection(400, 50, 'intersection.png', (30, 30))
+
     road = Road(intersection1, intersection2)
     other_lane = Road(intersection2, intersection1)
 
+    road2 = Road(intersection2, intersection3)
+
     car = master.setup_car(road, fast_img, (int(30 * GOLDEN_RATIO), 30))
     car2 = master.setup_car(other_lane, slow_img, (int(30 * GOLDEN_RATIO), 30))
-
-    road.add_car(car)
-    other_lane.add_car(car2)
 
     car.velocity = 100
     car2.velocity = 50

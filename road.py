@@ -14,7 +14,10 @@ class Road(Edge):
         delta_x = end.x - start.x
         delta_y = end.y - start.y
         if delta_x == 0.0:
-            self.angle = 90.0
+            if delta_y < 0:
+                self.angle = 270.0
+            else:
+                self.angle = 90.0
         else:
             self.angle = math.atan(delta_y / delta_x) * 180.0 / math.pi
         if delta_x < 0 and delta_y < 0:

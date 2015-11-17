@@ -7,7 +7,7 @@ import threading
 import time
 
 class Master:
-    def __init__(self, width=800, height=400):
+    def __init__(self, width=800, height=800):
         self.height, self.width = height, width
         self.window = Window(width=width, height=height)
         self.objects = set()
