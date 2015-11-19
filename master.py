@@ -46,6 +46,15 @@ class Master:
         i = Intersection(x, y)
         self.window.add_sprite(s)
         return i
+
+    def setup_road(self, start, end, image):
+
+        r = Road(start, end)
+        s = Sprite(image, (int(r.length), 30))
+        s.move_to(x=start.x, y=self.height-start.y)
+        s.set_angle(r.angle)
+        self.window.add_sprite(s)
+        return r
     
     def run_simulation(self):
         self.internal_thread.start()

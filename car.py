@@ -55,31 +55,46 @@ class Car(object):
             self.velocity += self.acceleration * time_since_last_update
 
         def update_dist():
-            dist_to_finish = self.road.length - self.road_position
+            self.dist_to_finish = self.road.length - self.road_position
             if self.velocity == 0.0:
-                time_to_finish = float('inf')
+                self.time_to_finish = float('inf')
             else:
-                time_to_finish = dist_to_finish / self.velocity
+                self.time_to_finish = self.dist_to_finish / self.velocity
 
             if self.velocity == 0.0:
-                time_from_start = 0
+                self.time_from_start = 0
             else:
-                time_from_start = self.road_position / self.velocity
+                self.time_from_start = self.road_position / self.velocity
 
-            # Slow down before intersections.
-            # TODO: slow down before any obstacle. (other car, stopsign, destination, ...)
-            if time_to_finish < 2.0:
-                self.acceleration = -0.5 * self.velocity
-                if self.velocity <= 20:
-                    self.acceleration = 0
-                pass
-
-            # Speed up after intersections
-            if time_from_start < 2.0:
-                self.acceleration = 2.5 * self.velocity
+        # TODO: make this smarter
+        def going_too_fast():
+            if self.time_to_finish < 2.0:
+                if self.velocity <= 30:
+                    return False
+                else:
+                    return True
+        
+        # TODO: make this smarter
+        def going_too_slow():
+            if self.time_from_start < 2.0:
                 if self.velocity >= 100:
+                    return False
+                else:
+                    return True
+
+        def car_control():
+            '''
+            Changes the acceleration and velocity of the car based on if we
+            need to speed up or slow down.
+            '''
+            if going_too_fast():
+                self.acceleration = -0.5 * self.velocity
+            else:
+                self.acceleration = 0
+                if going_too_slow():
+                    self.acceleration = 2.0 * self.velocity
+                else:
                     self.acceleration = 0
-                pass
 
         def update_adjacent_cars():
             # TODO: update the prev/next cars
@@ -87,6 +102,7 @@ class Car(object):
 
         update_velocity()
         update_dist()
+        car_control()
         update_adjacent_cars()
 
         self.onchange(self)

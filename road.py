@@ -20,15 +20,13 @@ class Road(Edge):
                 self.angle = 90.0
         else:
             self.angle = math.atan(delta_y / delta_x) * 180.0 / math.pi
-            if delta_y == 0.0:
-                if delta_x < 0.0:
-                    self.angle = 180.0 - self.angle
+            if delta_x < 0.0 and delta_y >= 0.0:
+                self.angle = 180.0 + self.angle
         if delta_x < 0 and delta_y < 0:
             self.angle = 180 + self.angle
     
     def add_car(self, car):
         self.cars.append(car)
-        # TODO: make that car aware of the cars ahead/behind it? the car should do that
 
     def remove_car(self, car):
         self.cars.remove(car)
