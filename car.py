@@ -2,9 +2,10 @@ import time
 import random
 import datetime
 from threading import Thread
+from graph import Graph
 
 class Car(object):
-    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None):
+    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None, intersections=None):
         # Physics stuff.
         self.velocity = 0.0
         self.acceleration = 0.0
@@ -14,6 +15,14 @@ class Car(object):
         self.road = road # Road object.
         self.road_position = init_road_progress # In feet.
         self.destination = destination # Destination object.
+        if destination is not None and intersections is not None:
+            print "getting directions..."
+            self.directions = self.get_directions(destination, intersections)
+            print "directions:"
+            print self.directions
+        else:
+            self.directions = None
+
         # TODO: Calculate list of roads to go on to get to the
         #       destination (dijkstra).
 
@@ -28,6 +37,27 @@ class Car(object):
 
         self.internal_thread = Thread(target=self.loop)
         self.internal_thread.start()
+
+    def get_directions(self, destination, intersections):
+        graph = self.populate_intersection_graph(intersections)
+        initial_intersection = self.road.end_point
+        
+        return graph.get_path(initial_intersection, destination)
+
+    def populate_intersection_graph(self, intersections):
+        graph = Graph()
+
+        for intersection in intersections:
+            if not graph.node_exists(intersection):
+                graph.add_node(intersection)
+
+            for road in intersection.outgoing_edge_set:
+                if not graph.node_exists(road.end_point):
+                    graph.add_node(road.end_point)
+
+                graph.add_edge(intersection, road.end_point, road.length)
+
+        return graph
 
     def loop(self):
         while True:

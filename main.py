@@ -25,7 +25,11 @@ def main():
     intersection3 = master.setup_intersection(500, 500, 'intersection.png', (img_size, img_size))
     intersection4 = master.setup_intersection(500, 100, 'intersection.png', (img_size, img_size))
 
+
     road = master.setup_road(intersection1, intersection2, 'road.png')
+
+    destination = master.setup_destination(500, 300, 'intersection.png', (img_size, img_size), road, True)
+
     road1 = master.setup_road(intersection2, intersection1, 'road.png')
 
     road3 = master.setup_road(intersection3, intersection2, 'road.png')
