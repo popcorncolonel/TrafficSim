@@ -17,12 +17,12 @@ def load_image(name, colorkey=None):
     except pygame.error, message:
         print 'Cannot load image:', name
         raise SystemExit, message
-    image = image.convert()
+### image = image.convert() # Apparently removes transparency
+    image = pygame.Surface.convert_alpha(image)
     if colorkey is not None:
         if colorkey is -1:
             colorkey = image.get_at((0,0))
-        #image.set_colorkey(colorkey, RLEACCEL)
-    return image, image.get_rect()
+    return image.convert_alpha(), image.get_rect()
 
 
 class Window:
