@@ -15,20 +15,15 @@ class Graph:
 
     def add_edge(self, from_node, to_node, distance):
         self.edges[from_node].append(to_node)
-        self.edges[to_node].append(from_node)
         self.distances[(from_node, to_node)] = distance
 
-    def get_path(graph, initial, destination):
+    def dijkstra(graph, initial):
         visited = {initial: 0}
         path = {}
 
-        nodes = set(graph.nodes)
-
-        while nodes:
-            print "looping with nodes:"
-            print nodes
+        while graph.nodes:
             min_node = None
-            for node in nodes:
+            for node in graph.nodes:
                 if node in visited:
                     if min_node is None:
                         min_node = node
@@ -38,11 +33,7 @@ class Graph:
             if min_node is None:
                 break
 
-            nodes.remove(min_node)
-
-            if min_node == destination:
-                break
-
+            graph.nodes.remove(min_node)
             current_weight = visited[min_node]
 
             for edge in graph.edges[min_node]:
@@ -51,9 +42,19 @@ class Graph:
                     visited[edge] = weight
                     path[edge] = min_node
 
-        print "returning:"
-        #print visited
-        print path
+        return path
+
+    def get_path(graph, initial, destination):
+        # get shortest path to all nodes
+        all_paths = graph.dijkstra(initial)
+
+        # select path to the destination
+        path = [destination]
+
+        while destination != initial:
+            destination = all_paths[destination]
+            path = [destination] + path
+
         return path
 
 

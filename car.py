@@ -5,7 +5,7 @@ from threading import Thread
 from graph import Graph
 
 class Car(object):
-    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None, intersections=None):
+    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None, intersections=None, destinations=None):
         # Physics stuff.
         self.velocity = 0.0
         self.acceleration = 0.0
@@ -16,10 +16,8 @@ class Car(object):
         self.road_position = init_road_progress # In feet.
         self.destination = destination # Destination object.
         if destination is not None and intersections is not None:
-            print "getting directions..."
+            self.destinations = destinations
             self.directions = self.get_directions(destination, intersections)
-            print "directions:"
-            print self.directions
         else:
             self.directions = None
 
@@ -47,6 +45,7 @@ class Car(object):
     def populate_intersection_graph(self, intersections):
         graph = Graph()
 
+        # add each intersection and its connecting roads to the graph
         for intersection in intersections:
             if not graph.node_exists(intersection):
                 graph.add_node(intersection)
@@ -56,6 +55,11 @@ class Car(object):
                     graph.add_node(road.end_point)
 
                 graph.add_edge(intersection, road.end_point, road.length)
+
+        # add the destination as a node in the graph
+        for destination in self.destinations:
+            graph.add_node(destination)
+            graph.add_edge(destination.road.start_point, destination, destination.road.length)
 
         return graph
 

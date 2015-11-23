@@ -41,7 +41,7 @@ class Master:
             new_y = self.height - (car.road_position * math.sin(angle_rads) + car.road.start_point.y)
             s.move_to(x=new_x, y=new_y)
 
-        c = Car(road, onchange=onchange, destination=self.choose_destination(), intersections=self.intersection_set)
+        c = Car(road, onchange=onchange, destination=self.choose_destination(), intersections=self.intersection_set, destinations=self.destination_set)
 
         self.window.add_sprite(s)
         return c
@@ -49,11 +49,11 @@ class Master:
     def choose_destination(self):
         return random.choice(list(self.destination_set))
 
-    def setup_intersection(self, x, y, image, size):
+    def setup_intersection(self, x, y, image, size, name=None):
         s = Sprite(image, size)
         s.move_to(x=x, y=self.height - y)
 
-        i = Intersection(x, y)
+        i = Intersection(x, y, name=name)
         self.intersection_set.add(i)
         self.window.add_sprite(s)
         return i
