@@ -5,7 +5,10 @@ from threading import Thread
 from graph import Graph
 
 class Car(object):
-    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None, intersections=None, destinations=None):
+    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None, intersections=None, destinations=None, size=(36, 20)):
+        self.length = size[0]
+
+        # These are like the "personality" of the driver
         self.MAX_TURNING_SPEED = random.normalvariate(50, 5)
                 # Should be proportion of speed limit
         self.MAX_COMFORTABLE_SPEED = random.normalvariate(200, 20)
@@ -13,15 +16,18 @@ class Car(object):
         self.MAX_COMFORTABLE_ACCELERATION = random.normalvariate(0.65, 0.05) * self.MAX_ACCELERATION
         self.PREFERRED_ACCELERATION = self.MAX_COMFORTABLE_ACCELERATION * random.normalvariate(0.75, 0.05)
         self.AVG_JERK = 5
+        self.MIN_CAR_LENGTHS = max(0, random.normalvariate(0.4, 0.1))
+        self.MAX_CAR_LENGTHS = max(self.MIN_CAR_LENGTHS, random.normalvariate(2.5, 0.8))
 
         # Physics stuff.
         self.velocity = 0.0
         self.acceleration = 0.0
         self.jerk = 0.0
 
+
         # Car metadata.
-        self.road = road # Road object.
-        self.road_position = init_road_progress # In feet.
+        self.road = None
+        road.add_car(self, pos=init_road_progress)
         self.destination = destination # Destination object.
         if destination is not None and intersections is not None:
             self.destinations = destinations
@@ -43,6 +49,7 @@ class Car(object):
 
         self.internal_thread = Thread(target=self.loop)
         self.internal_thread.start()
+
 
     def get_directions(self, destination, intersections):
         graph = self.populate_intersection_graph(intersections)
@@ -88,8 +95,8 @@ class Car(object):
 
             if self.road_position >= self.road.length:
                 if len(self.road.end_point.outgoing_edge_set) != 0:
-                    self.road = random.sample(self.road.end_point.outgoing_edge_set, 1)[0]
-                    self.road_position = 0.0
+                    new_road = random.sample(self.road.end_point.outgoing_edge_set, 1)[0]
+                    new_road.add_car(self)
                 else:
                     self.road_position = self.road.length
 
@@ -122,21 +129,32 @@ class Car(object):
                 else:
                     self.acceleration = 0
 
-        def update_adjacent_cars():
-            # TODO: update the prev/next cars
-            pass
-
         update_velocity()
         update_dist()
         self.update_acceleration()
-        update_adjacent_cars()
+        #  update_adjacent_cars()  # handled when turning onto a new road now
 
         self.onchange(self)
 
+    def get_obstacle(self):
+        if self.next_car is not None:  # Need to lock; next_car could go out of scope here
+            obstacle_speed = self.next_car.velocity
+            car_room = self.next_car.length + self.get_buffer(self.next_car)
+            place_to_stop = self.next_car.road_position - car_room
+            dist_to_obstacle = max(0, place_to_stop - self.road_position)
+        else:
+            obstacle_speed = 0
+            dist_to_obstacle = self.dist_to_finish
+        return obstacle_speed, dist_to_obstacle
+
+    def get_buffer(self, obstacle):
+        proportion = obstacle.velocity / self.MAX_COMFORTABLE_SPEED
+        car_lengths = ((self.MAX_CAR_LENGTHS - self.MIN_CAR_LENGTHS) * proportion
+                       + self.MIN_CAR_LENGTHS)
+        return car_lengths * obstacle.length
 
     def update_acceleration(self):
-        obstacle_speed = 0 #self.MAX_TURNING_SPEED
-        dist_to_obstacle = self.dist_to_finish     # or car
+        obstacle_speed, dist_to_obstacle = self.get_obstacle()
         speed_change = abs(self.velocity - obstacle_speed)
 
         def lowest_that_works(accelerations):
@@ -148,7 +166,7 @@ class Car(object):
                 dist_to_stop = quadratic(acc, speed_change, 0, time_to_change)
                 if dist_to_stop < dist_to_obstacle:
                     return acc
-            return accelerations[-1]
+            return accelerations[-1]  # None work; gotta stop as fast as possible
 
         acc = lowest_that_works([self.MAX_ACCELERATION,
                                  self.MAX_COMFORTABLE_ACCELERATION,
@@ -167,5 +185,6 @@ class Car(object):
 
     # Initially instantaneous acceleration.
     def change_acc_to(self, acceleration):
-        self.acceleration = acceleration
+        modifier = -1 if acceleration < 0 else 1
+        self.acceleration = modifier * min(abs(acceleration), self.MAX_ACCELERATION)
 

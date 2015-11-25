@@ -1,4 +1,5 @@
 from edge import Edge
+from threading import Lock
 import math
 
 class Road(Edge):
@@ -8,7 +9,8 @@ class Road(Edge):
     '''
     def __init__(self, start, end, cars=[]):
         Edge.__init__(self, start, end)
-        self.cars = cars
+        self.cars = list(cars)
+        self.mutex = Lock()
 
         self.length = math.sqrt((end.y-start.y)**2 + (end.x-start.x)**2)
         delta_x = end.x - start.x
@@ -24,11 +26,44 @@ class Road(Edge):
                 self.angle = 180.0 + self.angle
         if delta_x < 0 and delta_y < 0:
             self.angle = 180 + self.angle
-    
-    def add_car(self, car):
-        self.cars.append(car)
+
+
+    def add_car(self, car, pos=0.0):  # Maybe need to lock for this operation
+        def index_to_insert(lst, elem):
+            for i in xrange(len(lst)):
+                if elem.road_position < lst[i].road_position:
+                    return i
+            return len(lst)
+
+        try:
+            car.road.remove_car(car)
+        except:   # Fails if the car has no road yet, which is fine
+            pass
+        car.road = self
+        car.road_position = pos
+        self.mutex.acquire()
+        i = index_to_insert(self.cars, car)
+        if i < len(self.cars):
+            car.next_car = self.cars[i]
+            self.cars[i].prev_car = car
+        else:
+            car.next_car = None
+        if i > 0:
+            car.prev_car = self.cars[i - 1]
+            self.cars[i - 1].next_car = car
+        else:
+            car.prev_car = None
+        self.cars.insert(i, car)
+        self.mutex.release()
 
     def remove_car(self, car):
+        self.mutex.acquire()
+        if car.next_car is not None:
+            car.next_car.prev_car = car.prev_car
+        if car.prev_car is not None:
+            car.prev_car.next_car = car.next_car
+        car.next_car = car.prev_car = None
         self.cars.remove(car)
+        self.mutex.release()
 
 

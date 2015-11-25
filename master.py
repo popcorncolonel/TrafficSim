@@ -41,7 +41,7 @@ class Master:
             new_y = self.height - (car.road_position * math.sin(angle_rads) + car.road.start_point.y)
             s.move_to(x=new_x, y=new_y)
 
-        c = Car(road, onchange=onchange, destination=self.choose_destination(), intersections=self.intersection_set, destinations=self.destination_set)
+        c = Car(road, onchange=onchange, destination=self.choose_destination(), intersections=self.intersection_set, destinations=self.destination_set, size=size)
 
         self.window.add_sprite(s)
         return c
@@ -75,7 +75,7 @@ class Master:
         s.set_angle(r.angle)
         self.window.add_sprite(s)
         return r
-    
+
     def run_simulation(self):
         self.internal_thread.start()
         self.internal_thread.join()
