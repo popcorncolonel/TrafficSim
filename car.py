@@ -5,6 +5,14 @@ from threading import Thread
 
 class Car(object):
     def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None):
+        self.MAX_TURNING_SPEED = random.normalvariate(50, 5)
+                # Should be proportion of speed limit
+        self.MAX_COMFORTABLE_SPEED = random.normalvariate(200, 20)
+        self.MAX_ACCELERATION = random.normalvariate(100, 10)
+        self.MAX_COMFORTABLE_ACCELERATION = random.normalvariate(0.65, 0.05) * self.MAX_ACCELERATION
+        self.PREFERRED_ACCELERATION = self.MAX_COMFORTABLE_ACCELERATION * random.normalvariate(0.75, 0.05)
+        self.AVG_JERK = 5
+
         # Physics stuff.
         self.velocity = 0.0
         self.acceleration = 0.0
@@ -66,22 +74,6 @@ class Car(object):
             else:
                 self.time_from_start = self.road_position / self.velocity
 
-        # TODO: make this smarter
-        def going_too_fast():
-            if self.time_to_finish < 2.0:
-                if self.velocity <= 30:
-                    return False
-                else:
-                    return True
-        
-        # TODO: make this smarter
-        def going_too_slow():
-            if self.time_from_start < 2.0:
-                if self.velocity >= 100:
-                    return False
-                else:
-                    return True
-
         def car_control():
             '''
             Changes the acceleration and velocity of the car based on if we
@@ -102,13 +94,43 @@ class Car(object):
 
         update_velocity()
         update_dist()
-        car_control()
+        self.update_acceleration()
         update_adjacent_cars()
 
         self.onchange(self)
 
 
+    def update_acceleration(self):
+        obstacle_speed = 0 #self.MAX_TURNING_SPEED
+        dist_to_obstacle = self.dist_to_finish     # or car
+        speed_change = abs(self.velocity - obstacle_speed)
+
+        def lowest_that_works(accelerations):
+            def quadratic(a, b, c, t):
+                return a*t**2 + b*t + c
+            accelerations = sorted(accelerations)
+            for acc in accelerations:
+                time_to_change = speed_change / acc
+                dist_to_stop = quadratic(acc, speed_change, 0, time_to_change)
+                if dist_to_stop < dist_to_obstacle:
+                    return acc
+            return accelerations[-1]
+        acc = lowest_that_works([self.MAX_ACCELERATION,
+                                 self.MAX_COMFORTABLE_ACCELERATION,
+                                 self.MAX_COMFORTABLE_ACCELERATION * 3/4,
+                                 self.MAX_COMFORTABLE_ACCELERATION * 2/4,
+                                 self.MAX_COMFORTABLE_ACCELERATION * 1/4,
+                                 self.PREFERRED_ACCELERATION])
+
+        if self.velocity > obstacle_speed and acc >= self.PREFERRED_ACCELERATION:
+            self.change_acc_to(-acc)
+        elif self.velocity < self.MAX_COMFORTABLE_SPEED:
+            self.change_acc_to(self.PREFERRED_ACCELERATION)
+        else:
+            self.change_acc_to(0)
+
+
     # Initially instantaneous acceleration.
-    def set_acceleration(self, acceleration):
+    def change_acc_to(self, acceleration):
         self.acceleration = acceleration
 
