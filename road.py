@@ -28,7 +28,7 @@ class Road(Edge):
             self.angle = 180 + self.angle
 
 
-    def add_car(self, car, pos=0.0):  # Maybe need to lock for this operation
+    def add_car(self, car, pos=0.0):
         def index_to_insert(lst, elem):
             for i in xrange(len(lst)):
                 if elem.road_position < lst[i].road_position:
@@ -41,29 +41,28 @@ class Road(Edge):
             pass
         car.road = self
         car.road_position = pos
-        self.mutex.acquire()
-        i = index_to_insert(self.cars, car)
-        if i < len(self.cars):
-            car.next_car = self.cars[i]
-            self.cars[i].prev_car = car
-        else:
-            car.next_car = None
-        if i > 0:
-            car.prev_car = self.cars[i - 1]
-            self.cars[i - 1].next_car = car
-        else:
-            car.prev_car = None
-        self.cars.insert(i, car)
-        self.mutex.release()
+        with self.mutex:
+            i = index_to_insert(self.cars, car)
+            if i < len(self.cars):
+                car.set_next(self.cars[i])
+                self.cars[i].set_prev(car)
+            else:
+                car.set_next(None)
+            if i > 0:
+                car.set_prev(self.cars[i - 1])
+                self.cars[i - 1].set_next(car)
+            else:
+                car.set_prev(None)
+            self.cars.insert(i, car)
 
     def remove_car(self, car):
-        self.mutex.acquire()
-        if car.next_car is not None:
-            car.next_car.prev_car = car.prev_car
-        if car.prev_car is not None:
-            car.prev_car.next_car = car.next_car
-        car.next_car = car.prev_car = None
-        self.cars.remove(car)
-        self.mutex.release()
+        with self.mutex:
+            if car.next_car is not None:
+                car.next_car.set_prev(car.prev_car)
+            if car.prev_car is not None:
+                car.prev_car.set_next(car.next_car)
+            car.set_next(None)
+            car.set_prev(None)
+            self.cars.remove(car)
 
 

@@ -1,22 +1,23 @@
 import time
 import random
 import datetime
-from threading import Thread
+from threading import Thread, Lock
 from graph import Graph
 
 class Car(object):
     def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None, intersections=None, destinations=None, size=(36, 20)):
         self.length = size[0]
+        self.mutex = Lock()
 
         # These are like the "personality" of the driver
-        self.MAX_TURNING_SPEED = random.normalvariate(50, 5)
+        self.MAX_TURNING_SPEED = min(0, random.normalvariate(10, 3))
                 # Should be proportion of speed limit
-        self.MAX_COMFORTABLE_SPEED = random.normalvariate(200, 20)
-        self.MAX_ACCELERATION = random.normalvariate(100, 10)
-        self.MAX_COMFORTABLE_ACCELERATION = random.normalvariate(0.65, 0.05) * self.MAX_ACCELERATION
-        self.PREFERRED_ACCELERATION = self.MAX_COMFORTABLE_ACCELERATION * random.normalvariate(0.75, 0.05)
+        self.MAX_COMFORTABLE_SPEED = random.normalvariate(200, 40)
+        self.MAX_ACCELERATION = random.normalvariate(100, 20)
+        self.MAX_COMFORTABLE_ACCELERATION = self.MAX_ACCELERATION * min(1, random.normalvariate(0.65, 0.15))
+        self.PREFERRED_ACCELERATION = self.MAX_COMFORTABLE_ACCELERATION * min(1, random.normalvariate(0.75, 0.15))
         self.AVG_JERK = 5
-        self.MIN_CAR_LENGTHS = max(0, random.normalvariate(0.4, 0.1))
+        self.MIN_CAR_LENGTHS = max(0, random.normalvariate(0.4, 0.2))
         self.MAX_CAR_LENGTHS = max(self.MIN_CAR_LENGTHS, random.normalvariate(2.5, 0.8))
 
         # Physics stuff.
@@ -78,6 +79,14 @@ class Car(object):
 
         return graph
 
+    def set_next(self, next):
+        with self.mutex:
+            self.next_car = next
+
+    def set_prev(self, prev):
+        with self.mutex:
+            self.prev_car = prev
+
     def loop(self):
         while True:
             time_elapsed = (datetime.datetime.now() - self.last_time).total_seconds()
@@ -88,12 +97,14 @@ class Car(object):
     # Automatically updates the internal status of the car.
     def __update_status__(self, time_since_last_update=0.1):
         def update_velocity():
+            def close_enough(x, pos):
+                return abs(pos - x) <= self.length / 5 and self.velocity < self.MAX_TURNING_SPEED
             # Update position (based on velocity)
             self.road_position += self.velocity * time_since_last_update
             if self.road_position == self.road.length:
                 print 'uh oh' # deal with intersection
 
-            if self.road_position >= self.road.length:
+            if close_enough(self.road_position, self.road.length):
                 if len(self.road.end_point.outgoing_edge_set) != 0:
                     new_road = random.sample(self.road.end_point.outgoing_edge_set, 1)[0]
                     new_road.add_car(self)
@@ -137,12 +148,15 @@ class Car(object):
         self.onchange(self)
 
     def get_obstacle(self):
+        self.mutex.acquire()
         if self.next_car is not None:  # Need to lock; next_car could go out of scope here
             obstacle_speed = self.next_car.velocity
             car_room = self.next_car.length + self.get_buffer(self.next_car)
             place_to_stop = self.next_car.road_position - car_room
+            self.mutex.release()
             dist_to_obstacle = max(0, place_to_stop - self.road_position)
         else:
+            self.mutex.release()
             obstacle_speed = 0
             dist_to_obstacle = self.dist_to_finish
         return obstacle_speed, dist_to_obstacle
