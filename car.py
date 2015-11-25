@@ -2,9 +2,10 @@ import time
 import random
 import datetime
 from threading import Thread
+from graph import Graph
 
 class Car(object):
-    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None):
+    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None, intersections=None, destinations=None):
         self.MAX_TURNING_SPEED = random.normalvariate(50, 5)
                 # Should be proportion of speed limit
         self.MAX_COMFORTABLE_SPEED = random.normalvariate(200, 20)
@@ -22,6 +23,12 @@ class Car(object):
         self.road = road # Road object.
         self.road_position = init_road_progress # In feet.
         self.destination = destination # Destination object.
+        if destination is not None and intersections is not None:
+            self.destinations = destinations
+            self.directions = self.get_directions(destination, intersections)
+        else:
+            self.directions = None
+
         # TODO: Calculate list of roads to go on to get to the
         #       destination (dijkstra).
 
@@ -36,6 +43,33 @@ class Car(object):
 
         self.internal_thread = Thread(target=self.loop)
         self.internal_thread.start()
+
+    def get_directions(self, destination, intersections):
+        graph = self.populate_intersection_graph(intersections)
+        initial_intersection = self.road.end_point
+
+        return graph.get_path(initial_intersection, destination)
+
+    def populate_intersection_graph(self, intersections):
+        graph = Graph()
+
+        # add each intersection and its connecting roads to the graph
+        for intersection in intersections:
+            if not graph.node_exists(intersection):
+                graph.add_node(intersection)
+
+            for road in intersection.outgoing_edge_set:
+                if not graph.node_exists(road.end_point):
+                    graph.add_node(road.end_point)
+
+                graph.add_edge(intersection, road.end_point, road.length)
+
+        # add the destination as a node in the graph
+        for destination in self.destinations:
+            graph.add_node(destination)
+            graph.add_edge(destination.road.start_point, destination, destination.road.length)
+
+        return graph
 
     def loop(self):
         while True:
@@ -115,6 +149,7 @@ class Car(object):
                 if dist_to_stop < dist_to_obstacle:
                     return acc
             return accelerations[-1]
+
         acc = lowest_that_works([self.MAX_ACCELERATION,
                                  self.MAX_COMFORTABLE_ACCELERATION,
                                  self.MAX_COMFORTABLE_ACCELERATION * 3/4,

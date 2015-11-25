@@ -20,12 +20,16 @@ img_size = 20
 def main():
     master = Master(800, 800)
 
-    intersection1 = master.setup_intersection(100, 100, 'intersection.png', (img_size, img_size))
-    intersection2 = master.setup_intersection(100, 500, 'intersection.png', (img_size, img_size))
-    intersection3 = master.setup_intersection(500, 500, 'intersection.png', (img_size, img_size))
-    intersection4 = master.setup_intersection(500, 100, 'intersection.png', (img_size, img_size))
+    intersection1 = master.setup_intersection(100, 100, 'intersection.png', (img_size, img_size), name="one")
+    intersection2 = master.setup_intersection(100, 500, 'intersection.png', (img_size, img_size), name="two")
+    intersection3 = master.setup_intersection(500, 500, 'intersection.png', (img_size, img_size), name="three")
+    intersection4 = master.setup_intersection(500, 100, 'intersection.png', (img_size, img_size), name="four")
+
 
     road = master.setup_road(intersection1, intersection2, 'road.png')
+
+    destination = master.setup_destination(500, 300, 'intersection.png', (img_size, img_size), road, True)
+
     road1 = master.setup_road(intersection2, intersection1, 'road.png')
 
     road3 = master.setup_road(intersection3, intersection2, 'road.png')
