@@ -1,4 +1,3 @@
-import sys
 from edge import Edge
 from intersection import Intersection
 from road import Road
@@ -6,7 +5,10 @@ from car import Car
 from source import Source, Destination
 from graphics import *
 from master import Master
+
+import sys
 import time
+import random
 import datetime
 
 fast_img = 'red-car.png'
@@ -15,10 +17,10 @@ intersection_img = 'intersection.png'
 
 GOLDEN_RATIO = 1.61803398874989484820458683436563811772030917980576286213544862270526046281890
 
-img_size = 20
+img_size = 40
 
 def main():
-    master = Master(800, 800)
+    master = Master(800, 800, img_size)
 
     intersection1 = master.setup_intersection(100, 100, 'intersection.png', (img_size, img_size))
     intersection2 = master.setup_intersection(100, 500, 'intersection.png', (img_size, img_size))
@@ -46,12 +48,25 @@ def main():
     car7 = master.setup_car(road5, fast_img, (int(img_size * GOLDEN_RATIO), img_size))
 
     car.velocity = 100
+    car.road_position = random.randint(0, 300)
+
     car2.velocity = 50
+    car2.road_position = random.randint(0, 300)
+
     car3.velocity = 100
+    car3.road_position = random.randint(0, 300)
+
     car4.velocity = 60
+    car4.road_position = random.randint(0, 300)
+
     car5.velocity = 90
+    car5.road_position = random.randint(0, 300)
+
     car6.velocity = 230
+    car6.road_position = random.randint(0, 300)
+
     car7.velocity = 150
+    car7.road_position = random.randint(0, 300)
 
     master.run_simulation()
 
