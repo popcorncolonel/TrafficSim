@@ -39,8 +39,9 @@ class Master:
             degs = car.road.angle
             s.set_angle(degs)
             angle_rads = degs * math.pi / 180.0
-            x = car.road_position * math.cos(angle_rads) + car.road.start_point.x
-            y = self.height - (car.road_position * math.sin(angle_rads) + car.road.start_point.y)
+            x = car.road_position*math.cos(angle_rads) + car.road.start_point.x
+            y = self.height - (car.road_position * math.sin(angle_rads) +
+                               car.road.start_point.y)
             if degs == 0.0:
                 y += self.img_size / 2
             if degs == 90.0:
@@ -51,7 +52,9 @@ class Master:
                 x -= self.img_size / 2
             s.move_to(x=x, y=y)
 
-        c = Car(road, onchange=onchange, destination=self.choose_destination(), intersections=self.intersection_set, destinations=self.destination_set, size=size)
+        c = Car(road, onchange=onchange, destination=self.choose_destination(),
+                intersections=self.intersection_set,
+                destinations=self.destination_set, size=size)
 
         self.window.add_sprite(s)
         return c

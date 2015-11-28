@@ -11,7 +11,7 @@ class Source(Vertex):
     
     def spawn_car(self):
         if self.generative:
-            new_car = Car(self.road, init_road_progress = self.length_along_road)
+            new_car = Car(self.road, init_road_progress=self.length_along_road)
             self.road.add_car(new_car)
         else:
             # remove a car from the set
