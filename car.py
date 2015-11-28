@@ -50,6 +50,7 @@ class Car(object):
         self.last_time = datetime.datetime.now()
 
         self.internal_thread = Thread(target=self.loop)
+        self.internal_thread.daemon = True
         self.internal_thread.start()
 
 

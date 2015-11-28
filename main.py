@@ -17,7 +17,7 @@ intersection_img = 'intersection.png'
 
 GOLDEN_RATIO = 1.61803398874989484820458683436563811772030917980576286213544862270526046281890
 
-img_size = 40
+img_size = 20
 
 def main():
     master = Master(800, 800, img_size)
@@ -72,7 +72,10 @@ def main():
     car7.velocity = 150
     car7.road_position = random.randint(0, 300)
 
-    master.run_simulation()
+    try:
+        master.run_simulation()
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == '__main__':
     main()

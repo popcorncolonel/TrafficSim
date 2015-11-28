@@ -16,6 +16,7 @@ class Master:
         self.window = Window(width=width, height=height)
         self.objects = set()
         self.internal_thread = threading.Thread(target=self.loop)
+        self.internal_thread.daemon = True
         self.intersection_set = set()
         self.source_set = set()
         self.destination_set = set()
@@ -129,5 +130,6 @@ class Master:
 
     def run_simulation(self):
         self.internal_thread.start()
-        self.internal_thread.join()
+        while threading.active_count > 0:
+            time.sleep(5)
 
