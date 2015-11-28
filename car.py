@@ -1,3 +1,4 @@
+import sys
 import time
 import random
 import datetime
@@ -5,7 +6,9 @@ from threading import Thread, Lock
 from graph import Graph
 
 class Car(object):
-    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0, destination=None, intersections=None, destinations=None, size=(36, 20)):
+    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0,
+                       destination=None, intersections=None, destinations=None,
+                       size=(36, 20)):
         self.length = size[0]
         self.mutex = Lock()
 
@@ -19,7 +22,8 @@ class Car(object):
         self.AVG_JERK = 25
         self.STOP_SPACE = max(0, random.normalvariate(0.2, 0.05))
         self.MIN_CAR_LENGTHS = max(0, random.normalvariate(0.4, 0.2))
-        self.MAX_CAR_LENGTHS = max(self.MIN_CAR_LENGTHS, random.normalvariate(2.5, 0.8))
+        self.MAX_CAR_LENGTHS = max(self.MIN_CAR_LENGTHS,
+                                   random.normalvariate(2.5, 0.8))
 
         # Physics stuff.
         self.velocity = 0.0
@@ -50,6 +54,7 @@ class Car(object):
         self.last_time = datetime.datetime.now()
 
         self.internal_thread = Thread(target=self.loop)
+        self.internal_thread.daemon = True
         self.internal_thread.start()
 
 
@@ -76,7 +81,8 @@ class Car(object):
         # add the destination as a node in the graph
         for destination in self.destinations:
             graph.add_node(destination)
-            graph.add_edge(destination.road.start_point, destination, destination.road.length)
+            graph.add_edge(destination.road.start_point, destination,
+                           destination.road.length)
 
         return graph
 
@@ -90,7 +96,8 @@ class Car(object):
 
     def loop(self):
         while True:
-            time_elapsed = (datetime.datetime.now() - self.last_time).total_seconds()
+            time_elapsed = (datetime.datetime.now() -
+                            self.last_time).total_seconds()
             self.__update_status__(time_elapsed)
             self.last_time = datetime.datetime.now()
             time.sleep(0.05)
@@ -107,7 +114,8 @@ class Car(object):
 
             if close_enough_behind(self.road_position, self.road.length - self.STOP_SPACE):
                 if len(self.road.end_point.outgoing_edge_set) != 0:
-                    new_road = random.sample(self.road.end_point.outgoing_edge_set, 1)[0]
+                    new_road = random.sample(
+                                self.road.end_point.outgoing_edge_set, 1)[0]
                     new_road.add_car(self)
                 else:
                     self.road_position = self.road.length
@@ -150,7 +158,8 @@ class Car(object):
 
     def get_obstacle(self):
         self.mutex.acquire()
-        if self.next_car is not None:  # Need to lock; next_car could go out of scope here
+        # Need to lock; next_car could go out of scope here
+        if self.next_car is not None:
             obstacle_speed = self.next_car.velocity
             car_room = self.next_car.length + self.get_buffer(self.next_car)
             place_to_stop = self.next_car.road_position - car_room
@@ -181,7 +190,7 @@ class Car(object):
                 dist_to_stop = quadratic(acc, speed_change, 0, time_to_change)
                 if dist_to_stop < dist_to_obstacle:
                     return acc
-            return accelerations[-1]  # None work; gotta stop as fast as possible
+            return accelerations[-1]  # None work-gotta stop as fast as possible
 
         acc = lowest_that_works([self.MAX_ACCELERATION,
                                  (self.MAX_ACCELERATION + self.MAX_COMFORTABLE_ACCELERATION) / 2.0,

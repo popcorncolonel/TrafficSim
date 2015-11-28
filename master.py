@@ -10,11 +10,13 @@ import time
 import random
 
 class Master:
-    def __init__(self, width=800, height=800):
+    def __init__(self, width=800, height=800, img_size=20):
+        self.img_size = img_size
         self.height, self.width = height, width
         self.window = Window(width=width, height=height)
         self.objects = set()
         self.internal_thread = threading.Thread(target=self.loop)
+        self.internal_thread.daemon = True
         self.intersection_set = set()
         self.source_set = set()
         self.destination_set = set()
@@ -37,11 +39,22 @@ class Master:
             degs = car.road.angle
             s.set_angle(degs)
             angle_rads = degs * math.pi / 180.0
-            new_x = car.road_position * math.cos(angle_rads) + car.road.start_point.x
-            new_y = self.height - (car.road_position * math.sin(angle_rads) + car.road.start_point.y)
-            s.move_to(x=new_x, y=new_y)
+            x = car.road_position*math.cos(angle_rads) + car.road.start_point.x
+            y = self.height - (car.road_position * math.sin(angle_rads) +
+                               car.road.start_point.y)
+            if degs == 0.0:
+                y += self.img_size / 2
+            if degs == 90.0:
+                x += self.img_size / 2
+            if degs == 180.0:
+                y -= self.img_size / 2
+            if degs == 270.0:
+                x -= self.img_size / 2
+            s.move_to(x=x, y=y)
 
-        c = Car(road, onchange=onchange, destination=self.choose_destination(), intersections=self.intersection_set, destinations=self.destination_set, size=size)
+        c = Car(road, onchange=onchange, destination=self.choose_destination(),
+                intersections=self.intersection_set,
+                destinations=self.destination_set, size=size)
 
         self.window.add_sprite(s)
         return c
@@ -68,15 +81,58 @@ class Master:
         return destination
 
     def setup_road(self, start, end, image):
-
         r = Road(start, end)
-        s = Sprite(image, (int(r.length), 30))
-        s.move_to(x=start.x, y=self.height-start.y)
-        s.set_angle(r.angle)
+
+        s = Sprite(image, (int(r.length)-self.img_size, self.img_size*2))
+        x = start.x
+        y = self.height - start.y
+
+        angle = r.angle
+
+        # force angle between [0, 360)
+        while angle < 0:
+            angle += 360
+        while angle >= 360.0:
+            angle -= 360
+
+        image_flipped = False
+        # DONT ASK 
+        if 90.0 <= angle < 270.0:
+            image_flipped = True
+            x = end.x
+            y = self.height - end.y
+
+        if angle == 0.0:
+            x += self.img_size
+
+        elif angle == 90.0:
+            if image_flipped:
+                y += self.img_size
+            else:
+                y -= self.img_size
+
+        elif angle == 180.0:
+            if image_flipped:
+                x += self.img_size
+            else:
+                x -= self.img_size
+
+        elif angle == 270.0:
+            y += self.img_size
+        
+        if angle == 0.0 or angle == 180.0:
+            y -= self.img_size / 2
+        else:
+            x -= self.img_size / 2
+
+        s.move_to(x=x, y=y)
+        s.set_angle(angle)
+
         self.window.add_sprite(s)
         return r
 
     def run_simulation(self):
         self.internal_thread.start()
-        self.internal_thread.join()
+        while threading.active_count > 0:
+            time.sleep(5)
 
