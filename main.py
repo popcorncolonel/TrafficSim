@@ -13,7 +13,6 @@ import datetime
 
 fast_img = 'red-car.png'
 slow_img = 'red-car-slow.png'
-intersection_img = 'intersection.png'
 
 GOLDEN_RATIO=1.61803398874989484820458683436563811772030917980576286213544862270
 
@@ -48,7 +47,7 @@ def main():
     road6 = master.setup_road(intersection1, intersection4, 'road.png')
     road7 = master.setup_road(intersection4, intersection1, 'road.png')
 
-    destination = master.setup_destination(_end, _end/2, 'intersection.png',
+    destination = master.setup_destination(_end, _end/2, 'destination.png',
                                            (img_size, img_size), road, True)
 
     car = master.setup_car(road3, fast_img, (int(img_size * GOLDEN_RATIO),
