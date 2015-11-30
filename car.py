@@ -106,9 +106,9 @@ class Car(object):
     # Automatically updates the internal status of the car.
     def __update_status__(self, time_since_last_update=0.1):
         def update_velocity():
-            def close_enough(x, pos):
-                return (abs(pos - x) <= self.length / 5 and
-                        self.velocity < self.MAX_TURNING_SPEED)
+            def close_enough(pos, obstacle_len):
+                return (obstacle_len - pos) <= self.length / 5
+                        #and self.velocity < self.MAX_TURNING_SPEED)
             # Update position (based on velocity)
             self.road_position += self.velocity * time_since_last_update
             if close_enough(self.road_position, self.road.length):

@@ -42,13 +42,17 @@ class Master:
             x = car.road_position * math.cos(angle_rads) + car.road.start_point.x
             y = self.height - (car.road_position * math.sin(angle_rads) +
                                car.road.start_point.y)
+
+            # Set the car to the right lane of the road
             if degs == 0.0:
                 y += self.img_size / 2
+                x -= self.img_size / 2
             if degs == 90.0:
                 x += self.img_size / 2
             if degs == 180.0:
                 y -= self.img_size / 2
             if degs == 270.0:
+                y -= self.img_size / 2
                 x -= self.img_size / 2
 
             s.move_to(x=x, y=y)
@@ -86,7 +90,6 @@ class Master:
 
         x_len = int(r.length)#-self.img_size
         y_len = self.img_size*2
-        print x_len
 
         s = Sprite(image, (x_len, y_len))
 

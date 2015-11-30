@@ -23,7 +23,7 @@ def main():
     master = Master(800, 800, img_size)
 
     _start = 100
-    _end = 200
+    _end = 300
 
     intersection1 = master.setup_intersection(_start, _start, 'intersection.png',
                                               (img_size,img_size), name="one")
@@ -53,7 +53,6 @@ def main():
 
     car = master.setup_car(road3, fast_img, (int(img_size * GOLDEN_RATIO),
                             img_size))
-    '''
     car2 = master.setup_car(road1, slow_img, (int(img_size * GOLDEN_RATIO),
                             img_size))
     car3 = master.setup_car(road4, fast_img, (int(img_size * GOLDEN_RATIO),
@@ -66,7 +65,6 @@ def main():
                             img_size))
     car7 = master.setup_car(road5, fast_img, (int(img_size * GOLDEN_RATIO),
                             img_size))
-    '''
 
     try:
         master.run_simulation()
