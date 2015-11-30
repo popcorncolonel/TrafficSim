@@ -111,9 +111,6 @@ class Car(object):
                         self.velocity < self.MAX_TURNING_SPEED)
             # Update position (based on velocity)
             self.road_position += self.velocity * time_since_last_update
-            if self.road_position == self.road.length:
-                print 'uh oh' # deal with intersection
-
             if close_enough(self.road_position, self.road.length):
                 if len(self.road.end_point.outgoing_edge_set) != 0:
                     new_road = random.sample(

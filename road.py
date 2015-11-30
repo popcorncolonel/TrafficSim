@@ -12,7 +12,7 @@ class Road(Edge):
         self.cars = list(cars)
         self.mutex = Lock()
 
-        self.length = math.sqrt((end.y-start.y)**2 + (end.x-start.x)**2)
+        self.length = math.sqrt((end.y-start.y)**2 + (end.x-start.x)**2) - 20
         delta_x = end.x - start.x
         delta_y = end.y - start.y
         if delta_x == 0.0:
@@ -29,6 +29,8 @@ class Road(Edge):
 
 
     def add_car(self, car, pos=0.0):
+        if pos == 0.0:
+            pos = car.length
         def index_to_insert(lst, elem):
             for i in xrange(len(lst)):
                 if elem.road_position < lst[i].road_position:
