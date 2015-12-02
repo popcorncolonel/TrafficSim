@@ -66,7 +66,7 @@ class Master:
         s = Sprite(image, size)
         s.move_to(x=x, y=self.height - y)
 
-        i = Intersection(x, y, name=name)
+        i = Intersection(x, y, size[0], name=name)
         self.intersection_set.add(i)
         self.window.add_sprite(s)
         return i
@@ -96,7 +96,7 @@ class Master:
             angle -= 360
 
         image_flipped = False
-        # DONT ASK 
+        # DONT ASK
         if 90.0 <= angle < 270.0:
             image_flipped = True
             x = end.x
@@ -119,7 +119,7 @@ class Master:
 
         elif angle == 270.0:
             y += self.img_size
-        
+
         if angle == 0.0 or angle == 180.0:
             y -= self.img_size / 2
         else:
