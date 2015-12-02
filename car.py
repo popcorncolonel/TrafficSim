@@ -14,11 +14,10 @@ class Car(object):
 
         # These are like the "personality" of the driver
         self.MAX_TURNING_SPEED = min(0, random.normalvariate(10, 3))
-                # Should be proportion of speed limit
         self.COMFORTABLE_SPEED = random.normalvariate(1.0, 0.15)
-        self.MAX_ACCELERATION = random.normalvariate(100, 20)
-        self.MAX_COMFORTABLE_ACCELERATION = self.MAX_ACCELERATION * min(1, random.normalvariate(0.65, 0.15))
-        self.PREFERRED_ACCELERATION = self.MAX_COMFORTABLE_ACCELERATION * min(1, random.normalvariate(0.75, 0.15))
+        self.MAX_ACCELERATION = random.normalvariate(140, 20)
+        self.COMFORTABLE_ACCELERATION = self.MAX_ACCELERATION * min(1, random.normalvariate(0.75, 0.15))
+        self.PREFERRED_ACCELERATION = self.COMFORTABLE_ACCELERATION * min(1, random.normalvariate(0.85, 0.15))
         self.AVG_JERK = 25
         self.STOP_SPACE = max(0, random.normalvariate(0.2, 0.05))
         self.MIN_CAR_LENGTHS = max(0, random.normalvariate(0.4, 0.2))
@@ -29,6 +28,8 @@ class Car(object):
         self.velocity = 0.0
         self.acceleration = 0.0
         self.jerk = 0.0
+        self.dist_to_finish = 0.0
+        self.time_to_finish = float('inf')
 
 
         # Car metadata.
@@ -49,10 +50,11 @@ class Car(object):
         # car behind this car on the road
         self.prev_car = None
 
-        self.onchange = onchange
+        self.in_intersection = False
 
         self.last_time = datetime.datetime.now()
 
+        self.onchange = onchange
         self.internal_thread = Thread(target=self.loop)
         self.internal_thread.daemon = True
         self.internal_thread.start()
@@ -105,23 +107,13 @@ class Car(object):
     # Automatically updates the internal status of the car.
     def __update_status__(self, time_since_last_update=0.1):
         def update_velocity():
+            self.velocity += self.acceleration * time_since_last_update
+
+        def update_dist():
             def close_enough_behind(x, pos):
                 return pos - x <= self.length / 5
             # Update position (based on velocity)
             self.road_position += self.velocity * time_since_last_update
-
-            if close_enough_behind(self.road_position, self.road.length - self.STOP_SPACE):
-                if len(self.road.end_point.outgoing_edge_set) != 0:
-                    new_road = random.sample(
-                                self.road.end_point.outgoing_edge_set, 1)[0]
-                    new_road.add_car(self)
-                else:
-                    self.road_position = self.road.length
-
-            # Update velocity (based on acceleration)
-            self.velocity += self.acceleration * time_since_last_update
-
-        def update_dist():
             self.dist_to_finish = self.road.length - self.road_position
             if self.velocity == 0.0:
                 self.time_to_finish = float('inf')
@@ -133,25 +125,26 @@ class Car(object):
             else:
                 self.time_from_start = self.road_position / self.velocity
 
-        def car_control():
-            '''
-            Changes the acceleration and velocity of the car based on if we
-            need to speed up or slow down.
-            '''
-            if going_too_fast():
-                self.acceleration = -0.5 * self.velocity
-            else:
-                self.acceleration = 0
-                if going_too_slow():
-                    self.acceleration = 2.0 * self.velocity
-                else:
-                    self.acceleration = 0
+            if self.road_position == self.road.length:
+                print 'uh oh' # deal with intersection
 
+            if self.dist_to_finish <= self.length / 5:
+                if not self.in_intersection:
+                    self.road.end_point.enter()
+                    self.velocity = 1
+                self.in_intersection = True
+                if self.road_position >= self.road.length + self.length:
+                    if len(self.road.end_point.outgoing_edge_set) != 0:
+                        new_road = random.sample(
+                                    self.road.end_point.outgoing_edge_set, 1)[0]
+                        new_road.add_car(self)
+            elif self.in_intersection and self.road_position >= self.length:
+                self.in_intersection = False
+                self.road.start_point.exit()
+
+        self.change_acc_to(self.desired_acceleration(), time_since_last_update)
         update_velocity()
         update_dist()
-        self.change_acc_to(self.desired_acceleration(), time_since_last_update)
-        #  update_adjacent_cars()  # handled when turning onto a new road now
-
         self.onchange(self)
 
     def get_obstacle(self):
@@ -163,10 +156,14 @@ class Car(object):
             place_to_stop = self.next_car.road_position - car_room
             self.mutex.release()
             dist_to_obstacle = max(0, place_to_stop - self.road_position)
+        elif self.in_intersection and self.road_position >= self.road.length:
+            self.mutex.release()
+            obstacle_speed = 0
+            dist_to_obstacle = self.road.length + self.length - self.road_position
         else:
             self.mutex.release()
             obstacle_speed = 0
-            dist_to_obstacle = self.dist_to_finish - self.STOP_SPACE
+            dist_to_obstacle = self.dist_to_finish# - self.STOP_SPACE
         return obstacle_speed, dist_to_obstacle
 
     def get_buffer(self, obstacle):
@@ -191,11 +188,11 @@ class Car(object):
             return accelerations[-1]  # None work-gotta stop as fast as possible
 
         acc = lowest_that_works([self.MAX_ACCELERATION,
-                                 (self.MAX_ACCELERATION + self.MAX_COMFORTABLE_ACCELERATION) / 2.0,
-                                 self.MAX_COMFORTABLE_ACCELERATION,
-                                 self.MAX_COMFORTABLE_ACCELERATION * 3/4,
-                                 self.MAX_COMFORTABLE_ACCELERATION * 2/4,
-                                 self.MAX_COMFORTABLE_ACCELERATION * 1/4,
+                                 (self.MAX_ACCELERATION + self.COMFORTABLE_ACCELERATION) / 2.0,
+                                 self.COMFORTABLE_ACCELERATION,
+                                 self.COMFORTABLE_ACCELERATION * 3/4,
+                                 self.COMFORTABLE_ACCELERATION * 2/4,
+                                 self.COMFORTABLE_ACCELERATION * 1/4,
                                  self.PREFERRED_ACCELERATION])
 
         if self.velocity > obstacle_speed and acc >= self.PREFERRED_ACCELERATION:
