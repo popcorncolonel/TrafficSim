@@ -86,9 +86,9 @@ class Master:
         return destination
 
     def setup_road(self, start, end, image):
-        r = Road(start, end)
+        r = Road(start, end, height=self.img_size)
 
-        x_len = int(r.length)#-self.img_size
+        x_len = int(r.length)# - self.img_size 
         y_len = self.img_size*2
 
         s = Sprite(image, (x_len, y_len))
@@ -139,6 +139,10 @@ class Master:
 
         self.window.add_sprite(s)
         return r
+
+    def setup_roads(self, i1, i2, image):
+        return [self.setup_road(i1, i2, image),
+                self.setup_road(i2, i1, image)]
 
     def run_simulation(self):
         self.internal_thread.start()

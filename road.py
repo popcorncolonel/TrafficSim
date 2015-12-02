@@ -7,13 +7,13 @@ class Road(Edge):
     start is an Intersection.
     end is an Intersection.
     '''
-    def __init__(self, start, end, cars=[], speed_limit=220):
+    def __init__(self, start, end, cars=[], speed_limit=220, height=20):
         Edge.__init__(self, start, end)
         self.cars = list(cars)
         self.speed_limit = speed_limit
         self.mutex = Lock()
 
-        self.length = math.sqrt((end.y-start.y)**2 + (end.x-start.x)**2) - 20
+        self.length = math.sqrt((end.y-start.y)**2 + (end.x-start.x)**2) - height
         delta_x = end.x - start.x
         delta_y = end.y - start.y
         if delta_x == 0.0:
