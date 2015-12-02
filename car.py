@@ -111,7 +111,7 @@ class Car(object):
 
         def update_dist():
             def close_enough_behind(x, pos):
-                return pos - x <= self.length / 5 and self.velocity < self.MAX_TURNING_SPEED
+                return pos - x <= self.length / 5
             # Update position (based on velocity)
             self.road_position += self.velocity * time_since_last_update
             self.dist_to_finish = self.road.length - self.road_position

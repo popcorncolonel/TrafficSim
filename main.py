@@ -13,7 +13,6 @@ import datetime
 
 fast_img = 'red-car.png'
 slow_img = 'red-car-slow.png'
-intersection_img = 'intersection.png'
 
 GOLDEN_RATIO=1.61803398874989484820458683436563811772030917980576286213544862270
 
@@ -22,13 +21,16 @@ img_size = 20
 def main():
     master = Master(800, 800, img_size)
 
-    intersection1 = master.setup_intersection(100, 100, 'intersection.png',
+    _start = 100
+    _end = 300
+
+    intersection1 = master.setup_intersection(_start, _start, 'intersection.png',
                                               (img_size,img_size), name="one")
-    intersection2 = master.setup_intersection(100, 700, 'intersection.png',
+    intersection2 = master.setup_intersection(_start, _end, 'intersection.png',
                                               (img_size,img_size), name="two")
-    intersection3 = master.setup_intersection(700, 700, 'intersection.png',
+    intersection3 = master.setup_intersection(_end, _end, 'intersection.png',
                                               (img_size,img_size), name="three")
-    intersection4 = master.setup_intersection(700, 100, 'intersection.png',
+    intersection4 = master.setup_intersection(_end, _start, 'intersection.png',
                                               (img_size,img_size), name="four")
 
 
@@ -45,10 +47,10 @@ def main():
     road6 = master.setup_road(intersection1, intersection4, 'road.png')
     road7 = master.setup_road(intersection4, intersection1, 'road.png')
 
-    destination = master.setup_destination(700, 300, 'intersection.png',
+    destination = master.setup_destination(_end, _end/2, 'destination.png',
                                            (img_size, img_size), road, True)
 
-    car = master.setup_car(road, fast_img, (int(img_size * GOLDEN_RATIO),
+    car = master.setup_car(road3, fast_img, (int(img_size * GOLDEN_RATIO),
                             img_size))
     car2 = master.setup_car(road1, slow_img, (int(img_size * GOLDEN_RATIO),
                             img_size))
@@ -62,14 +64,6 @@ def main():
                             img_size))
     car7 = master.setup_car(road5, fast_img, (int(img_size * GOLDEN_RATIO),
                             img_size))
-
-    car.velocity = 100
-    car2.velocity = 50
-    car3.velocity = 100
-    car4.velocity = 60
-    car5.velocity = 90
-    car6.velocity = 230
-    car7.velocity = 150
 
     try:
         master.run_simulation()
