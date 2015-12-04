@@ -2,17 +2,23 @@ from car import Car
 from intersection import Intersection
 import random
 import time
+import threading
 
 class Source(Intersection):
-    def __init__(self, x, y, road, length_along_road, cars=[], generative=False):
+    def __init__(self, x, y, road, length_along_road, master, car_images, car_size, spawn_delay=2.0, cars=[], generative=False):
         Intersection.__init__(self, x, y, incoming_roads=[])
         self.road = road
         self.length_along_road = length_along_road
         self.cars = set(cars)
         self.generative = generative
+        source_thread = threading.Thread(target=self.spawn_loop, args=[master, car_images, car_size, spawn_delay])
+        source_thread.daemon = True
+        source_thread.start()
 
     def spawn_loop(self, master, car_images, size, spawn_delay=2.0):
         while True:
+            if self.road is None:
+                continue
             can_spawn = True
             if len(self.road.cars) > 0:
                 try:
