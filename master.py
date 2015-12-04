@@ -81,7 +81,7 @@ class Master:
 
     def setup_source(self, x, y, image, size, to_intersection, generative):
         s = Sprite(image, size)
-        s.move_to(x=x, y=y)
+        s.move_to(x=x, y=self.height - y)
 
         source = Source(x, y, None, None, generative=generative)
         road = self.setup_road(source, to_intersection, 'road.png')

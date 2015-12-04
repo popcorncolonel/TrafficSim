@@ -114,31 +114,6 @@ class Car(object):
             self.velocity += self.acceleration * time_since_last_update
 
         def update_dist():
-            def close_enough_behind(x, pos):
-                return pos - x <= self.length / 5
-            # Update position (based on velocity)
-            self.road_position += self.velocity * time_since_last_update
-            if close_enough_behind(self.road_position, self.road.length - self.STOP_SPACE):
-                if len(self.road.end_point.outgoing_edge_set) != 0:
-                    # if we have arrived at the destination, kill the thread and the sprite
-                    if self.next_directions_choice + 1 == len(self.directions):
-                        self.active = False
-                        self.sprite.kill()
-                        self.road.remove_car(self)
-                        return
-                    self.next_directions_choice += 1
-                    new_road = None
-                    for outgoing_road in self.road.end_point.outgoing_edge_set:
-                        if outgoing_road.end_point == self.directions[self.next_directions_choice]:
-                            new_road = outgoing_road
-                    new_road.add_car(self)
-                else:
-                    self.road_position = self.road.length
-
-            # Update velocity (based on acceleration)
-            self.velocity += self.acceleration * time_since_last_update
-
-        def update_dist():
             self.dist_to_finish = self.road.length - self.road_position
             if self.velocity == 0.0:
                 self.time_to_finish = float('inf')
@@ -153,6 +128,7 @@ class Car(object):
             if self.road_position == self.road.length:
                 print 'uh oh' # deal with intersection
 
+            self.road_position += self.velocity * time_since_last_update
             if self.dist_to_finish <= self.length / 5:
                 if not self.in_intersection:
                     self.road.end_point.enter()
@@ -160,9 +136,20 @@ class Car(object):
                 self.in_intersection = True
                 if self.road_position >= self.road.length + self.length:
                     if len(self.road.end_point.outgoing_edge_set) != 0:
-                        new_road = random.sample(
-                                    self.road.end_point.outgoing_edge_set, 1)[0]
-                        new_road.add_car(self, pos=0.0)
+                        # if we have arrived at the destination, kill the thread and the sprite
+                        if self.next_directions_choice + 1 == len(self.directions):
+                            self.active = False
+                            self.sprite.kill()
+                            self.road.remove_car(self)
+                            return
+                        self.next_directions_choice += 1
+                        new_road = None
+                        for outgoing_road in self.road.end_point.outgoing_edge_set:
+                            if outgoing_road.end_point == self.directions[self.next_directions_choice]:
+                                new_road = outgoing_road
+                        new_road.add_car(self)
+                    else:
+                        self.road_position = self.road.length
             elif self.in_intersection and self.road_position >= self.length:
                 self.in_intersection = False
                 self.road.start_point.exit()

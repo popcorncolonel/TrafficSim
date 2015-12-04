@@ -29,7 +29,7 @@ GOLDEN_RATIO=1.6180339887498948482045868343656381177203091798057628621354486227
 
 img_size = 15
 
-num_cars = 50
+num_cars = 10
 
 def main():
     master = Master(800, 800, img_size)
@@ -107,12 +107,17 @@ def main():
     roads.extend(master.setup_roads(intersection16, intersection15, 'road.png'))
     roads.extend(master.setup_roads(intersection7, intersection15, 'road.png'))
 
-    destination = master.setup_destination(300, 150, 'destination.png',
-                                           (img_size, img_size), road, True)
+    destination = master.setup_destination(700, 100, 'destination.png',
+                                           (img_size, img_size), intersection14, True)
 
+    destination2 = master.setup_destination(100, 450, 'destination.png',
+                                           (img_size, img_size), intersection17, True)
+
+
+    source = master.setup_source(50, 300, 'source.png', (img_size, img_size), intersection2, True)
 
     for i in range(num_cars):
-        master.setup_car(random.choice(roads),
+        master.setup_car(source,#random.choice(roads),
                          random.choice(car_colors),
                          (int(img_size * GOLDEN_RATIO), img_size))
 
