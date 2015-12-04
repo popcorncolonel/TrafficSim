@@ -83,7 +83,7 @@ class Master:
         return i
 
     def setup_source(self, x, y, source_image, source_size, to_intersection,
-                     car_images, car_size, generative=True, spawn_delay=2.0):
+                     car_images, car_size, generative=True, spawn_delay=10.0):
         s = Sprite(source_image, source_size)
         s.move_to(x=x, y=self.height - y)
 

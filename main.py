@@ -96,19 +96,23 @@ def main():
     master.setup_destination(400, 500, 'destination.png', intersection8)
 
 
-    source = master.setup_source(50, 300, 'source.png', (img_size, img_size), intersection2, car_colors, (img_size, img_size), True, spawn_delay=1.0)
-    source2 = master.setup_source(100, 50, 'source.png', (img_size, img_size), intersection1, car_colors, (img_size, img_size), True, spawn_delay=1.0)
-    source3 = master.setup_source(700, 400, 'source.png', (img_size, img_size), intersection11, car_colors, (img_size, img_size), True, spawn_delay=1.0)
-    source4 = master.setup_source(600, 600, 'source.png', (img_size, img_size), intersection12, car_colors, (img_size, img_size), True, spawn_delay=1.0)
+    source = master.setup_source(50, 300, 'source.png', (img_size, img_size),
+                    intersection2, car_colors,
+                    (int(GOLDEN_RATIO*img_size), img_size))
+
+    source2 = master.setup_source(100, 50, 'source.png', (img_size, img_size),
+                    intersection1, car_colors,
+                    (int(GOLDEN_RATIO*img_size), img_size))
+
+    source3 = master.setup_source(700, 400, 'source.png', (img_size, img_size),
+                    intersection11, car_colors,
+                    (int(GOLDEN_RATIO*img_size), img_size))
+
+    source4 = master.setup_source(600, 600, 'source.png', (img_size, img_size),
+                    intersection12, car_colors,
+                    (int(GOLDEN_RATIO*img_size), img_size))
 
     sources = [source, source2, source3, source4]
-
-    '''
-    for i in range(num_cars):
-        master.setup_car(random.choice(sources),
-                         random.choice(car_colors),
-                         (int(img_size * GOLDEN_RATIO), img_size))
-    '''
 
     try:
         master.run_simulation()
