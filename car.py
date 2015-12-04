@@ -33,7 +33,7 @@ class Car(object):
 
 
         # Car metadata.
-        self.road = None
+        self.road = road
         road.add_car(self, pos=init_road_progress)
         self.destination = destination # Destination object.
         if destination is not None and intersections is not None:
