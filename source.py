@@ -29,7 +29,8 @@ class Source(Intersection):
                     # can spawn if the first car is far enough along teh road
                     can_spawn = first_car.road_position > size[1]
                 except:
-                    pass
+                    # just in case
+                    can_spawn = False
             if can_spawn:
                 master.setup_car(self, random.choice(car_images), size)
             time.sleep(spawn_delay)
