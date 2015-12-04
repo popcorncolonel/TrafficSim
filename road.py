@@ -32,19 +32,24 @@ class Road(Edge):
     def add_car(self, car, pos=None):
         if pos == None:
             pos = car.length
+            num_cars = len(self.cars)
+            if num_cars > 0:
+                pos = min(pos, self.cars[0].road_position
+                            - self.cars[0].length)
+        car.road_position = pos
+
         def index_to_insert(lst, elem):
             for i in xrange(len(lst)):
                 if elem.road_position < lst[i].road_position:
                     return i
             return len(lst)
 
-        try:
-            car.road.remove_car(car)
-        except:   # Fails if the car has no road yet, which is fine
-            pass
-        car.road = self
-        car.road_position = pos
         with self.mutex:
+            try:
+                car.road.remove_car(car)
+            except:   # Fails if the car has no road yet, which is fine
+                pass
+            car.road = self
             i = index_to_insert(self.cars, car)
             if i < len(self.cars):
                 car.set_next(self.cars[i])
