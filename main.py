@@ -107,8 +107,8 @@ def main():
     roads.extend(master.setup_roads(intersection16, intersection15, 'road.png'))
     roads.extend(master.setup_roads(intersection7, intersection15, 'road.png'))
 
-    destination = master.setup_destination(700, 100, 'destination.png',
-                                           (img_size, img_size), intersection14, True)
+    #destination = master.setup_destination(700, 100, 'destination.png',
+    #                                       (img_size, img_size), intersection14, True)
 
     destination2 = master.setup_destination(100, 450, 'destination.png',
                                            (img_size, img_size), intersection17, True)
