@@ -6,7 +6,7 @@ from threading import Thread, Lock
 from graph import Graph
 
 class Car(object):
-    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0,
+    def __init__(self, road, onchange=lambda:None, init_road_progress=None,
                        destination=None, intersections=None, destinations=None,
                        size=(36, 20), sprite=None):
         self.length = size[0]
