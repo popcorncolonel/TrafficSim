@@ -31,9 +31,7 @@ class Master:
             obj.move()
         self.window.refresh()
 
-    def setup_car(self, road, image, size):
-        s = Sprite(image, size)
-        s.move_to(x=road.start_point.x, y=self.height - road.start_point.y)
+    def setup_car(self, source, image, size):
 
         def onchange(car):
             degs = car.road.angle
@@ -57,9 +55,14 @@ class Master:
 
             s.move_to(x=x, y=y)
 
-        c = Car(road, onchange=onchange, destination=self.choose_destination(),
-                intersections=self.intersection_set,
-                destinations=self.destination_set, size=size)
+        s = Sprite(image, size)
+        c = source.spawn_car(onchange=onchange,
+                             destination=self.choose_destination(),
+                             intersections=self.intersection_set,
+                             destinations=self.destination_set,
+                             size=size,
+                             sprite=s)
+        s.move_to(x=c.road.start_point.x, y=self.height - c.road.start_point.y)
 
         self.window.add_sprite(s)
         return c
@@ -76,11 +79,30 @@ class Master:
         self.window.add_sprite(s)
         return i
 
-    def setup_destination(self, x, y, image, size, road, destructive):
+    def setup_source(self, x, y, image, size, to_intersection, generative):
+        s = Sprite(image, size)
+        s.move_to(x=x, y=y)
+
+        source = Source(x, y, None, None, generative=generative)
+        road = self.setup_road(source, to_intersection, 'road.png')
+        source.road = road
+        source.length_along_road = road.length
+        self.source_set.add(source)
+        self.window.add_sprite(s)
+        return source
+
+    def setup_destination(self, x, y, image, size, from_intersection, destructive):
         d = Sprite(image, size)
         d.move_to(x=x, y=self.height - y)
 
-        destination = Destination(road, road.length, destructive=destructive)
+        # temporarily create the destination with no road or
+        # road length; this gets around the circular dependency of
+        # destinations depending on roads and roads depending on endpoints
+        destination = Destination(x, y, None, None, destructive)
+        road = self.setup_road(from_intersection, destination, 'road.png')
+        destination.road = road
+        destination.length_along_road = road.length
+
         self.destination_set.add(destination)
         self.window.add_sprite(d)
         return destination

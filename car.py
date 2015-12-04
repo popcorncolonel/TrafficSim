@@ -8,9 +8,11 @@ from graph import Graph
 class Car(object):
     def __init__(self, road, onchange=lambda:None, init_road_progress=0.0,
                        destination=None, intersections=None, destinations=None,
-                       size=(36, 20)):
+                       size=(36, 20), sprite=None):
         self.length = size[0]
         self.mutex = Lock()
+        self.active = True
+        self.sprite = sprite
 
         # These are like the "personality" of the driver
         self.MAX_TURNING_SPEED = min(0, random.normalvariate(10, 3))
@@ -35,14 +37,14 @@ class Car(object):
         self.road = None
         road.add_car(self, pos=init_road_progress)
         self.destination = destination # Destination object.
+
+        # used to pick the next destination
+        self.next_directions_choice = 0
         if destination is not None and intersections is not None:
             self.destinations = destinations
             self.directions = self.get_directions(destination, intersections)
         else:
             self.directions = None
-
-        # TODO: Calculate list of roads to go on to get to the
-        #       destination (dijkstra).
 
         # car in front of this car on the road
         self.next_car = None
@@ -99,6 +101,8 @@ class Car(object):
             time_elapsed = (datetime.datetime.now() -
                             self.last_time).total_seconds()
             self.__update_status__(time_elapsed)
+            if not self.active:
+                break
             self.last_time = datetime.datetime.now()
             time.sleep(0.05)
 
@@ -112,8 +116,17 @@ class Car(object):
 
             if close_enough_behind(self.road_position, self.road.length - self.STOP_SPACE):
                 if len(self.road.end_point.outgoing_edge_set) != 0:
-                    new_road = random.sample(
-                                self.road.end_point.outgoing_edge_set, 1)[0]
+                    # if we have arrived at the destination, kill the thread and the sprite
+                    if self.next_directions_choice + 1 == len(self.directions):
+                        self.active = False
+                        self.sprite.kill()
+                        self.road.remove_car(self)
+                        return
+                    self.next_directions_choice += 1
+                    new_road = None
+                    for outgoing_road in self.road.end_point.outgoing_edge_set:
+                        if outgoing_road.end_point == self.directions[self.next_directions_choice]:
+                            new_road = outgoing_road
                     new_road.add_car(self)
                 else:
                     self.road_position = self.road.length
