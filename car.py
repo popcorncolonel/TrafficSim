@@ -147,7 +147,10 @@ class Car(object):
                 for outgoing_road in self.road.end_point.outgoing_edge_set:
                     if outgoing_road.end_point == self.directions[self.next_directions_choice]:
                         new_road = outgoing_road
-                new_road.add_car(self)
+                if self.road.angle == new_road.angle:
+                    new_road.add_car(self, pos=self.length / 2)
+                else:
+                    new_road.add_car(self)
             else:
                 self.road_position = self.road.length
 
