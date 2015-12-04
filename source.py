@@ -1,34 +1,37 @@
 from car import Car
-from vertex import Vertex
+from intersection import Intersection
 
-class Source(Vertex):
-    def __init__(self, road, length_along_road, cars=[], generative=False):
-        Vertex.__init__(self, incoming_edge_set=[road])
+class Source(Intersection):
+    def __init__(self, x, y, road, length_along_road, cars=[], generative=False):
+        Intersection.__init__(self, x, y, incoming_roads=[])
         self.road = road
         self.length_along_road = length_along_road
-        self.cars = set(cars) # Cars waiting to go
+        self.cars = set(cars)
         self.generative = generative
-    
-    def spawn_car(self):
+
+    def spawn_car(self, onchange=lambda:None, init_road_progress=0.0,
+                    destination=None, intersections=None, destinations=None,
+                    size=(36, 20), sprite=None):
         if self.generative:
-            new_car = Car(self.road, init_road_progress=self.length_along_road)
+            #new_car = Car(self.road, init_road_progress=self.length_along_road)
+            new_car = Car(self.road, onchange, init_road_progress,
+                            destination, intersections, destinations,
+                            size, sprite)
             self.road.add_car(new_car)
+            return new_car
         else:
             # remove a car from the set
             pass
 
-
-class Destination(Vertex):
-    def __init__(self, road, length_along_road, destructive=False):
-        Vertex.__init__(self, outgoing_edge_set=[road])
+class Destination(Intersection):
+    def __init__(self, x, y, road, length_along_road, destructive=False):
+        Intersection.__init__(self, x, y, outgoing_roads=[road])
         self.road = road
         self.length_along_road = length_along_road
         self.destructive = destructive
         self.cars = set()
-    
+
     def remove_car(self, car):
         self.road.remove_car(car)
         if not self.destructive:
             self.cars.add(car)
-        
-
