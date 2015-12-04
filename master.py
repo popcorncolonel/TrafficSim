@@ -9,6 +9,8 @@ import threading
 import time
 import random
 
+GOLDEN_RATIO=1.6180339887498948482045868343656381177203091798057628621354486227
+
 class Master:
     def __init__(self, width=800, height=800, img_size=20):
         self.img_size = img_size
@@ -31,7 +33,7 @@ class Master:
             obj.move()
         self.window.refresh()
 
-    def setup_car(self, source, image, size):
+    def setup_car(self, source, image, size=None):
         def onchange(car):
             degs = car.road.angle
             s.set_angle(degs)
@@ -69,7 +71,9 @@ class Master:
     def choose_destination(self):
         return random.choice(list(self.destination_set))
 
-    def setup_intersection(self, x, y, image, size, name=None):
+    def setup_intersection(self, x, y, image, size=None, name=None):
+        if size == None:
+            size = self.img_size, self.img_size
         s = Sprite(image, size)
         s.move_to(x=x, y=self.height - y)
 
@@ -90,7 +94,9 @@ class Master:
         self.window.add_sprite(s)
         return source
 
-    def setup_destination(self, x, y, image, size, from_intersection, destructive=True):
+    def setup_destination(self, x, y, image, from_intersection, size=None, destructive=True):
+        if size == None:
+            size = (self.img_size, self.img_size)
         d = Sprite(image, size)
         d.move_to(x=x, y=self.height - y)
 
