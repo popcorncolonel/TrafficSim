@@ -31,26 +31,30 @@ img_size = 20
 
 num_cars = 50
 
+x_offset = -25
+y_offset = 50
+scale = 1
+
 def main():
     master = Master(800, 800, img_size)
 
-    intersection1 = master.setup_intersection(100, 100, 'intersection.png')
-    intersection2 = master.setup_intersection(100, 300, 'intersection.png')
-    intersection3 = master.setup_destination(300, 300, 'destination.png', intersection2)
-    intersection4 = master.setup_intersection(300, 100, 'intersection.png')
-    intersection5 = master.setup_intersection(500, 100, 'intersection.png')
-    intersection6 = master.setup_intersection(500, 300, 'intersection.png')
-    intersection7 = master.setup_intersection(300, 700, 'intersection.png')
-    intersection8 = master.setup_intersection(500, 500, 'intersection.png')
-    intersection9 = master.setup_intersection(500, 700, 'intersection.png')
-    intersection10 = master.setup_intersection(700, 700, 'intersection.png')
-    intersection11 = master.setup_intersection(700, 500, 'intersection.png')
-    intersection12 = master.setup_intersection(600, 500, 'intersection.png')
-    intersection13 = master.setup_intersection(600, 200, 'intersection.png')
-    intersection14 = master.setup_intersection(700, 200, 'intersection.png')
-    intersection15 = master.setup_intersection(200, 700, 'intersection.png')
-    intersection16 = master.setup_intersection(200, 400, 'intersection.png')
-    intersection17 = master.setup_intersection(100, 400, 'intersection.png')
+    intersection1 = master.setup_intersection(scale*(x_offset+100), scale*(y_offset+100), 'intersection.png')
+    intersection2 = master.setup_intersection(scale*(x_offset+100), scale*(y_offset+300), 'intersection.png')
+    intersection3 = master.setup_destination(scale*(x_offset+300), scale*(y_offset+300), 'destination.png', intersection2)
+    intersection4 = master.setup_intersection(scale*(x_offset+300), scale*(y_offset+100), 'intersection.png')
+    intersection5 = master.setup_intersection(scale*(x_offset+500), scale*(y_offset+100), 'intersection.png')
+    intersection6 = master.setup_intersection(scale*(x_offset+500), scale*(y_offset+300), 'intersection.png')
+    intersection7 = master.setup_intersection(scale*(x_offset+300), scale*(y_offset+700), 'intersection.png')
+    intersection8 = master.setup_intersection(scale*(x_offset+500), scale*(y_offset+500), 'intersection.png')
+    intersection9 = master.setup_intersection(scale*(x_offset+500), scale*(y_offset+700), 'intersection.png')
+    intersection10 = master.setup_intersection(scale*(x_offset+700), scale*(y_offset+700), 'intersection.png')
+    intersection11 = master.setup_intersection(scale*(x_offset+700), scale*(y_offset+500), 'intersection.png')
+    intersection12 = master.setup_intersection(scale*(x_offset+600), scale*(y_offset+500), 'intersection.png')
+    intersection13 = master.setup_intersection(scale*(x_offset+600), scale*(y_offset+200), 'intersection.png')
+    intersection14 = master.setup_intersection(scale*(x_offset+700), scale*(y_offset+200), 'intersection.png')
+    intersection15 = master.setup_intersection(scale*(x_offset+200), scale*(y_offset+700), 'intersection.png')
+    intersection16 = master.setup_intersection(scale*(x_offset+200), scale*(y_offset+400), 'intersection.png')
+    intersection17 = master.setup_intersection(scale*(x_offset+100), scale*(y_offset+400), 'intersection.png')
 
 
     road = master.setup_road(intersection1, intersection2, 'road.png')
@@ -90,25 +94,25 @@ def main():
     roads.extend(master.setup_roads(intersection16, intersection15, 'road.png'))
     roads.extend(master.setup_roads(intersection7, intersection15, 'road.png'))
 
-    master.setup_destination(700, 100, 'destination.png', intersection14)
-    master.setup_destination(100, 550, 'destination.png', intersection17)
-    master.setup_destination(600, 100, 'destination.png', intersection5)
-    master.setup_destination(400, 500, 'destination.png', intersection8)
+    master.setup_destination(scale*(x_offset+700), scale*(y_offset+100), 'destination.png', intersection14)
+    master.setup_destination(scale*(x_offset+100), scale*(y_offset+550), 'destination.png', intersection17)
+    master.setup_destination(scale*(x_offset+600), scale*(y_offset+100), 'destination.png', intersection5)
+    master.setup_destination(scale*(x_offset+400), scale*(y_offset+500), 'destination.png', intersection8)
 
 
-    source = master.setup_source(50, 300, 'source.png', (img_size, img_size),
+    source = master.setup_source(scale*(x_offset+50), scale*(y_offset+300), 'source.png', (img_size, img_size),
                     intersection2, car_colors,
                     (int(GOLDEN_RATIO*img_size), img_size))
 
-    source2 = master.setup_source(100, 50, 'source.png', (img_size, img_size),
+    source2 = master.setup_source(scale*(x_offset+100), scale*(y_offset+50), 'source.png', (img_size, img_size),
                     intersection1, car_colors,
                     (int(GOLDEN_RATIO*img_size), img_size))
 
-    source3 = master.setup_source(700, 400, 'source.png', (img_size, img_size),
+    source3 = master.setup_source(scale*(x_offset+700), scale*(y_offset+400), 'source.png', (img_size, img_size),
                     intersection11, car_colors,
                     (int(GOLDEN_RATIO*img_size), img_size))
 
-    source4 = master.setup_source(600, 600, 'source.png', (img_size, img_size),
+    source4 = master.setup_source(scale*(x_offset+600), scale*(y_offset+600), 'source.png', (img_size, img_size),
                     intersection12, car_colors,
                     (int(GOLDEN_RATIO*img_size), img_size))
 
