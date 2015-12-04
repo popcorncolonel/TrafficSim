@@ -108,6 +108,7 @@ class Car(object):
     def __update_status__(self, time_since_last_update=0.1):
         def update_velocity():
             self.velocity += self.acceleration * time_since_last_update
+            self.velocity = max(0, self.velocity)
 
         def update_dist():
             def close_enough_behind(x, pos):
@@ -164,6 +165,7 @@ class Car(object):
             self.mutex.release()
             obstacle_speed = 0
             dist_to_obstacle = self.dist_to_finish# - self.STOP_SPACE
+
         return obstacle_speed, dist_to_obstacle
 
     def get_buffer(self, obstacle):
@@ -195,7 +197,7 @@ class Car(object):
                                  self.COMFORTABLE_ACCELERATION * 1/4,
                                  self.PREFERRED_ACCELERATION])
 
-        if self.velocity > obstacle_speed and acc >= self.PREFERRED_ACCELERATION:
+        if self.velocity >= obstacle_speed and acc >= self.PREFERRED_ACCELERATION:
             return -acc
         elif self.velocity < self.COMFORTABLE_SPEED * self.road.speed_limit:
             return self.PREFERRED_ACCELERATION
