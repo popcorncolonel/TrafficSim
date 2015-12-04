@@ -160,12 +160,13 @@ class Car(object):
             if self.road_position == self.road.length:
                 print 'uh oh' # deal with intersection
 
+            if self.in_intersection and (self.length <= self.road_position and
+                                         self.dist_to_finish > self.length / 5):
+                exit_intersection(self.road.start_point)
             if self.dist_to_finish <= self.length / 5:
                 enter_intersection()
                 if self.road_position >= self.road.length + self.length:
                     select_next_road()
-            elif self.in_intersection and self.road_position >= self.length:
-                exit_intersection(self.road.start_point)
 
         self.change_acc_to(self.desired_acceleration(), time_since_last_update)
         update_velocity()

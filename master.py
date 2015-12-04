@@ -82,8 +82,9 @@ class Master:
         self.window.add_sprite(s)
         return i
 
-    def setup_source(self, x, y, image, size, to_intersection, generative=True):
-        s = Sprite(image, size)
+    def setup_source(self, x, y, source_image, source_size, to_intersection,
+                     car_images, car_size, generative=True, spawn_delay=2.0):
+        s = Sprite(source_image, source_size)
         s.move_to(x=x, y=self.height - y)
 
         source = Source(x, y, None, None, generative=generative)
@@ -92,6 +93,10 @@ class Master:
         source.length_along_road = road.length
         self.source_set.add(source)
         self.window.add_sprite(s)
+        source_thread = threading.Thread(target=source.spawn_loop,
+                                         args=[self, car_images, car_size, spawn_delay])
+        source_thread.daemon = True
+        source_thread.start()
         return source
 
     def setup_destination(self, x, y, image, from_intersection, size=None, destructive=True):

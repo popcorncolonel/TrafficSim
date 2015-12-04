@@ -31,7 +31,7 @@ class Road(Edge):
 
     def add_car(self, car, pos=None):
         if pos == None:
-            pos = car.length
+            pos = 0
             num_cars = len(self.cars)
             if num_cars > 0:
                 pos = min(pos, self.cars[0].road_position
