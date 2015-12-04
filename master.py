@@ -74,7 +74,7 @@ class Master:
         s = Sprite(image, size)
         s.move_to(x=x, y=self.height - y)
 
-        i = Intersection(x, y, name=name)
+        i = Intersection(x, y, size[0], name=name)
         self.intersection_set.add(i)
         self.window.add_sprite(s)
         return i
@@ -108,9 +108,9 @@ class Master:
         return destination
 
     def setup_road(self, start, end, image):
-        r = Road(start, end)
+        r = Road(start, end, height=self.img_size)
 
-        x_len = int(r.length)#-self.img_size
+        x_len = int(r.length)# - self.img_size 
         y_len = self.img_size*2
 
         s = Sprite(image, (x_len, y_len))
@@ -127,7 +127,7 @@ class Master:
             angle -= 360
 
         image_flipped = False
-        # DONT ASK 
+        # DONT ASK
         if 90.0 <= angle < 270.0:
             image_flipped = True
             x = end.x
@@ -150,7 +150,7 @@ class Master:
 
         elif angle == 270.0:
             y += self.img_size
-        
+
         if angle == 0.0 or angle == 180.0:
             y -= self.img_size / 2
         else:
@@ -161,6 +161,10 @@ class Master:
 
         self.window.add_sprite(s)
         return r
+
+    def setup_roads(self, i1, i2, image):
+        return [self.setup_road(i1, i2, image),
+                self.setup_road(i2, i1, image)]
 
     def run_simulation(self):
         self.internal_thread.start()
