@@ -6,7 +6,7 @@ from threading import Thread, Lock
 from graph import Graph
 
 class Car(object):
-    def __init__(self, road, onchange=lambda:None, init_road_progress=0.0,
+    def __init__(self, road, onchange=lambda:None, init_road_progress=None,
                        destination=None, intersections=None, destinations=None,
                        size=(36, 20), sprite=None):
         self.length = size[0]
@@ -148,7 +148,11 @@ class Car(object):
                         for outgoing_road in self.road.end_point.outgoing_edge_set:
                             if outgoing_road.end_point == self.directions[self.next_directions_choice]:
                                 new_road = outgoing_road
-                        new_road.add_car(self)
+                        # if a car is going straight at an intersection, make it look better
+                        if self.road.angle == new_road.angle:
+                            new_road.add_car(self, self.length/2)
+                        else:
+                            new_road.add_car(self, 0.0)
                     else:
                         self.road_position = self.road.length
             elif self.in_intersection and self.road_position >= self.length:
