@@ -32,7 +32,6 @@ class Master:
         self.window.refresh()
 
     def setup_car(self, source, image, size):
-
         def onchange(car):
             degs = car.road.angle
             s.set_angle(degs)

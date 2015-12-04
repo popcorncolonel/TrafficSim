@@ -9,7 +9,7 @@ class Source(Intersection):
         self.cars = set(cars)
         self.generative = generative
 
-    def spawn_car(self, onchange=lambda:None, init_road_progress=0.0,
+    def spawn_car(self, onchange=lambda:None, init_road_progress=None,
                     destination=None, intersections=None, destinations=None,
                     size=(36, 20), sprite=None):
         if self.generative:

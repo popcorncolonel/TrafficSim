@@ -29,7 +29,7 @@ GOLDEN_RATIO=1.6180339887498948482045868343656381177203091798057628621354486227
 
 img_size = 15
 
-num_cars = 10
+num_cars = 2
 
 def main():
     master = Master(800, 800, img_size)

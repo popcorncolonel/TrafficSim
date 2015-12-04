@@ -44,33 +44,33 @@ class Road(Edge):
                     return i
             return len(lst)
 
-        with self.mutex:
-            try:
-                car.road.remove_car(car)
-            except:   # Fails if the car has no road yet, which is fine
-                pass
-            car.road = self
-            i = index_to_insert(self.cars, car)
-            if i < len(self.cars):
-                car.set_next(self.cars[i])
-                self.cars[i].set_prev(car)
-            else:
-                car.set_next(None)
-            if i > 0:
-                car.set_prev(self.cars[i - 1])
-                self.cars[i - 1].set_next(car)
-            else:
-                car.set_prev(None)
-            self.cars.insert(i, car)
+        self.mutex.acquire()
+        try:
+            car.road.remove_car(car)
+        except:   # Fails if the car has no road yet, which is fine
+            pass
+        car.road = self
+        i = index_to_insert(self.cars, car)
+        if i < len(self.cars):
+            car.set_next(self.cars[i])
+            self.cars[i].set_prev(car)
+        else:
+            car.set_next(None)
+        if i > 0:
+            car.set_prev(self.cars[i - 1])
+            self.cars[i - 1].set_next(car)
+        else:
+            car.set_prev(None)
+        self.cars.insert(i, car)
+        self.mutex.release()
 
     def remove_car(self, car):
-        with self.mutex:
-            if car.next_car is not None:
-                car.next_car.set_prev(car.prev_car)
-            if car.prev_car is not None:
-                car.prev_car.set_next(car.next_car)
-            car.set_next(None)
-            car.set_prev(None)
-            self.cars.remove(car)
+        if car.next_car is not None:
+            car.next_car.set_prev(car.prev_car)
+        if car.prev_car is not None:
+            car.prev_car.set_next(car.next_car)
+        car.set_next(None)
+        car.set_prev(None)
+        self.cars.remove(car)
 
 
