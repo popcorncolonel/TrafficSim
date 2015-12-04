@@ -116,7 +116,7 @@ def main():
 
     source = master.setup_source(50, 300, 'source.png', (img_size, img_size),
                                  intersection2, True, car_colors,
-                                 (img_size, img_size), spawn_delay=3.0)
+                                 (img_size, img_size), spawn_delay=1.0)
 
     '''
     for i in range(num_cars):
