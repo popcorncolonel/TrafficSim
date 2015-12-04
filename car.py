@@ -137,7 +137,7 @@ class Car(object):
                     if len(self.road.end_point.outgoing_edge_set) != 0:
                         new_road = random.sample(
                                     self.road.end_point.outgoing_edge_set, 1)[0]
-                        new_road.add_car(self)
+                        new_road.add_car(self, pos=0.0)
             elif self.in_intersection and self.road_position >= self.length:
                 self.in_intersection = False
                 self.road.start_point.exit()

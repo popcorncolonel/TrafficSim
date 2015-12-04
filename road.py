@@ -29,8 +29,8 @@ class Road(Edge):
             self.angle = 180 + self.angle
 
 
-    def add_car(self, car, pos=0.0):
-        if pos == 0.0:
+    def add_car(self, car, pos=None):
+        if pos == None:
             pos = car.length
         def index_to_insert(lst, elem):
             for i in xrange(len(lst)):
