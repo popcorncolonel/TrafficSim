@@ -52,6 +52,7 @@ class Graph:
         path = [destination]
 
         while destination != initial:
+            # change the destination to the intersection just before the last destination
             destination = all_paths[destination]
             path = [destination] + path
 
