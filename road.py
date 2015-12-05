@@ -11,7 +11,7 @@ class Road(Edge):
         Edge.__init__(self, start, end)
         self.cars = list(cars)
         self.speed_limit = speed_limit
-        self.mutex = Lock()
+        self.can_change_cars = Lock()
 
         self.length = math.sqrt((end.y-start.y)**2 + (end.x-start.x)**2) - height
         delta_x = end.x - start.x
@@ -44,7 +44,7 @@ class Road(Edge):
                     return i
             return len(lst)
 
-        with self.mutex:
+        with self.can_change_cars:
             try:
                 car.road._remove_car(car)
             except:   # Fails if the car has no road yet, which is fine
@@ -65,7 +65,7 @@ class Road(Edge):
 
 
     def remove_car(self, car):
-        with self.mutex:
+        with self.can_change_cars:
             self._remove_car(car)
 
     def _remove_car(self, car):
