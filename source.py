@@ -33,7 +33,7 @@ class Source(Intersection):
                     can_spawn = False
             if can_spawn:
                 master.setup_car(self, random.choice(car_images), size)
-            spawn_delay = max(0, random.normalvariate(spawn_delay, 2.0))
+            spawn_delay = max(0, random.normalvariate(spawn_delay, 1.0))
             time.sleep(spawn_delay)
 
     def spawn_car(self, onchange=lambda:None, init_road_progress=None,

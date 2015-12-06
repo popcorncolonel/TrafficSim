@@ -30,7 +30,7 @@ class Road(Edge):
 
 
     def add_car(self, car, pos=None):
-        if pos == None:
+        if pos is None:
             pos = 0
             num_cars = len(self.cars)
             if num_cars > 0:

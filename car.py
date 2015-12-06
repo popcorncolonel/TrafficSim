@@ -22,7 +22,7 @@ class Car(object):
         self.PREFERRED_ACCELERATION = self.COMFORTABLE_ACCELERATION * min(1, random.normalvariate(0.85, 0.15))
         self.AVG_JERK = 25
         self.STOP_SPACE = max(0, random.normalvariate(0.2, 0.05))
-        self.MIN_CAR_LENGTHS = max(0, random.normalvariate(0.4, 0.2))
+        self.MIN_CAR_LENGTHS = max(0, random.normalvariate(0.2, 0.1))
         self.MAX_CAR_LENGTHS = max(self.MIN_CAR_LENGTHS,
                                    random.normalvariate(2.5, 0.8))
 
@@ -33,10 +33,16 @@ class Car(object):
         self.dist_to_finish = 0.0
         self.time_to_finish = float('inf')
 
+        '''
+        # car in front of this car on the road
+        self.next_car = None
+        # car behind this car on the road
+        self.prev_car = None
+        '''
 
         # Car metadata.
         self.road = road
-        road.add_car(self, pos=init_road_progress)
+        road.add_car(self, pos=None)
         self.destination = destination # Destination object.
 
         # used to pick the next destination
@@ -47,10 +53,6 @@ class Car(object):
         else:
             self.directions = None
 
-        # car in front of this car on the road
-        self.next_car = None
-        # car behind this car on the road
-        self.prev_car = None
 
         self.in_intersection = False
 
@@ -123,6 +125,7 @@ class Car(object):
 
         def enter_intersection():
             if not self.in_intersection:
+                self.velocity = 0
                 self.road.end_point.enter()
                 self.velocity = 1
             self.in_intersection = True
