@@ -10,7 +10,7 @@ class Car(object):
                        destination=None, intersections=None, destinations=None,
                        size=(36, 20), sprite=None):
         self.length = size[0]
-        self.mutex = Lock()
+        self.can_change_neightbors = Lock()
         self.active = True
         self.sprite = sprite
 
@@ -85,11 +85,11 @@ class Car(object):
         return graph
 
     def set_next(self, next):
-        with self.mutex:
+        with self.can_change_neightbors:
             self.next_car = next
 
     def set_prev(self, prev):
-        with self.mutex:
+        with self.can_change_neightbors:
             self.prev_car = prev
 
     def loop(self):
@@ -157,8 +157,7 @@ class Car(object):
             if self.road_position == self.road.length:
                 print 'uh oh' # deal with intersection
 
-            if self.in_intersection and (self.length <= self.road_position and
-                                         self.dist_to_finish > self.length / 5):
+            if self.length <= self.road_position and self.dist_to_finish > self.length / 5:
                 exit_intersection(self.road.start_point)
             if self.dist_to_finish <= self.length / 5:
                 enter_intersection()
@@ -172,20 +171,20 @@ class Car(object):
         self.onchange(self)
 
     def get_obstacle(self):
-        self.mutex.acquire()
+        self.can_change_neightbors.acquire()
         # Need to lock; next_car could go out of scope here
         if self.next_car is not None:
             obstacle_speed = self.next_car.velocity
             car_room = self.next_car.length + self.get_buffer(self.next_car)
             place_to_stop = self.next_car.road_position - car_room
-            self.mutex.release()
+            self.can_change_neightbors.release()
             dist_to_obstacle = max(0, place_to_stop - self.road_position)
         elif self.in_intersection and self.road_position >= self.road.length:
-            self.mutex.release()
+            self.can_change_neightbors.release()
             obstacle_speed = 0
             dist_to_obstacle = self.road.length + self.length - self.road_position
         else:
-            self.mutex.release()
+            self.can_change_neightbors.release()
             obstacle_speed = 0
             dist_to_obstacle = self.dist_to_finish# - self.STOP_SPACE
 
