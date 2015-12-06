@@ -32,7 +32,7 @@ img_size = 20
 num_cars = 50
 
 x_offset = -25
-y_offset = 50
+y_offset = 90
 scale = 1
 
 def main():

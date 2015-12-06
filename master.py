@@ -104,12 +104,12 @@ class Master:
         # temporarily create the destination with no road or
         # road length; this gets around the circular dependency of
         # destinations depending on roads and roads depending on endpoints
-        destination = Destination(x, y, None, None, destructive)
+        destination = Destination(x, y, destructive)
         [road, road2] = self.setup_roads(from_intersection, destination, 'road.png')
-        destination.road = road
         destination.length_along_road = road.length
 
         self.destination_set.add(destination)
+        self.intersection_set.add(destination)
         self.window.add_sprite(d)
         return destination
 

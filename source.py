@@ -51,10 +51,8 @@ class Source(Intersection):
             pass
 
 class Destination(Intersection):
-    def __init__(self, x, y, road, length_along_road, destructive=False):
-        Intersection.__init__(self, x, y, outgoing_roads=[road])
-        self.road = road
-        self.length_along_road = length_along_road
+    def __init__(self, x, y, destructive=False):
+        Intersection.__init__(self, x, y, outgoing_roads=[], incoming_roads=[])
         self.destructive = destructive
         self.cars = set()
 

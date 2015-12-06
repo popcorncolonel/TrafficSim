@@ -82,12 +82,6 @@ class Car(object):
 
                 graph.add_edge(intersection, road.end_point, road.length)
 
-        # add the destination as a node in the graph
-        for destination in self.destinations:
-            graph.add_node(destination)
-            graph.add_edge(destination.road.start_point, destination,
-                           destination.road.length)
-
         return graph
 
     def set_next(self, next):
