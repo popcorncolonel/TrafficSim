@@ -13,7 +13,7 @@ class Road(Edge):
         self.speed_limit = speed_limit
         self.can_change_cars = Lock()
 
-        self.length = math.sqrt((end.y-start.y)**2 + (end.x-start.x)**2) - height
+        self.length = math.sqrt((end.y-start.y)**2+(end.x-start.x)**2) - height
         delta_x = end.x - start.x
         delta_y = end.y - start.y
         if delta_x == 0.0:

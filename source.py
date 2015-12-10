@@ -5,13 +5,15 @@ import time
 import threading
 
 class Source(Intersection):
-    def __init__(self, x, y, road, length_along_road, master, car_images, car_size, spawn_delay=2.0, cars=[], generative=False):
+    def __init__(self, x, y, road, length_along_road, master, car_images,
+                       car_size, spawn_delay=2.0, cars=[], generative=False):
         Intersection.__init__(self, x, y, incoming_roads=[])
         self.road = road
         self.length_along_road = length_along_road
         self.cars = set(cars)
         self.generative = generative
-        source_thread = threading.Thread(target=self.spawn_loop, args=[master, car_images, car_size, spawn_delay])
+        source_thread = threading.Thread(target=self.spawn_loop,
+                                         args=[master, car_images, car_size, spawn_delay])
         source_thread.daemon = True
         source_thread.start()
 
@@ -22,14 +24,14 @@ class Source(Intersection):
             can_spawn = True
             if len(self.road.cars) > 0:
                 try:
-                    # get the most recent car on the road
+                    # Get the most recent car on the road.
                     first_car = self.road.cars[0]
                     road_pos = first_car.road_position
 
-                    # can spawn if the first car is far enough along teh road
+                    # Can spawn if the first car is far enough along the road.
                     can_spawn = first_car.road_position > size[1]
                 except:
-                    # just in case
+                    # Just in case.
                     can_spawn = False
             if can_spawn:
                 master.setup_car(self, random.choice(car_images), size)
@@ -40,7 +42,6 @@ class Source(Intersection):
                     destination=None, intersections=None, destinations=None,
                     size=(36, 20), sprite=None):
         if self.generative:
-            #new_car = Car(self.road, init_road_progress=self.length_along_road)
             new_car = Car(self.road, onchange, init_road_progress,
                             destination, intersections, destinations,
                             size, sprite)
