@@ -45,14 +45,15 @@ class Graph:
         return path
 
     def get_path(graph, initial, destination):
-        # get shortest path to all nodes
+        # Get shortest path to all nodes.
         all_paths = graph.dijkstra(initial)
 
-        # select path to the destination
+        # Select path to the destination.
         path = [destination]
 
         while destination != initial:
-            # change the destination to the intersection just before the last destination
+            # Change the destination to the intersection just before
+            #   the last destination.
             destination = all_paths[destination]
             path = [destination] + path
 

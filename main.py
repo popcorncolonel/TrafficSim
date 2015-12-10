@@ -106,17 +106,17 @@ def setup_road_network(master):
     roads.extend(master.setup_roads(intersection9, intersection7, 'road.png'))
     roads.extend(master.setup_roads(intersection8, intersection9, 'road.png'))
 
-    roads.extend(master.setup_roads(intersection10, intersection11, 'road.png'))
+    roads.extend(master.setup_roads(intersection10, intersection11,'road.png'))
     roads.extend(master.setup_roads(intersection9, intersection10, 'road.png'))
 
-    roads.extend(master.setup_roads(intersection12, intersection11, 'road.png'))
-    roads.extend(master.setup_roads(intersection12, intersection13, 'road.png'))
+    roads.extend(master.setup_roads(intersection12, intersection11,'road.png'))
+    roads.extend(master.setup_roads(intersection12, intersection13,'road.png'))
 
-    roads.extend(master.setup_roads(intersection14, intersection13, 'road.png'))
+    roads.extend(master.setup_roads(intersection14, intersection13,'road.png'))
 
     roads.extend(master.setup_roads(intersection17, intersection2, 'road.png'))
-    roads.extend(master.setup_roads(intersection16, intersection17, 'road.png'))
-    roads.extend(master.setup_roads(intersection16, intersection15, 'road.png'))
+    roads.extend(master.setup_roads(intersection16, intersection17,'road.png'))
+    roads.extend(master.setup_roads(intersection16, intersection15,'road.png'))
     roads.extend(master.setup_roads(intersection7, intersection15, 'road.png'))
 
     master.setup_destination(scale*(x_offset+700), scale*(y_offset+100),

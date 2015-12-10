@@ -19,7 +19,7 @@ class Car(object):
         self.COMFORTABLE_SPEED = random.normalvariate(1.0, 0.15)
         self.MAX_ACCELERATION = random.normalvariate(140, 20)
         self.COMFORTABLE_ACCELERATION = self.MAX_ACCELERATION * \
-                                        min(1, random.normalvariate(0.75, 0.15))
+                                        min(1, random.normalvariate(0.75,0.15))
         self.PREFERRED_ACCELERATION = self.COMFORTABLE_ACCELERATION * \
                                       min(1, random.normalvariate(0.85, 0.15))
         self.AVG_JERK = 25
@@ -183,7 +183,8 @@ class Car(object):
         elif self.in_intersection and self.road_position >= self.road.length:
             self.can_change_neightbors.release()
             obstacle_speed = 0
-            dist_to_obstacle = self.road.length + self.length - self.road_position
+            dist_to_obstacle = (self.road.length +
+                                self.length - self.road_position)
         else:
             self.can_change_neightbors.release()
             obstacle_speed = 0
@@ -194,8 +195,8 @@ class Car(object):
     def get_buffer(self, obstacle):
         proportion = (obstacle.velocity /
                       (self.COMFORTABLE_SPEED * self.road.speed_limit))
-        car_lengths = ((self.MAX_CAR_LENGTHS - self.MIN_CAR_LENGTHS) * proportion
-                       + self.MIN_CAR_LENGTHS)
+        car_lengths = ((self.MAX_CAR_LENGTHS - self.MIN_CAR_LENGTHS) 
+                       * proportion + self.MIN_CAR_LENGTHS)
         return car_lengths * obstacle.length
 
     def desired_acceleration(self):
@@ -211,11 +212,11 @@ class Car(object):
                 dist_to_stop = quadratic(acc, speed_change, 0, time_to_change)
                 if dist_to_stop < dist_to_obstacle:
                     return acc
-            return accelerations[-1]  # None work-gotta stop as fast as possible
+            return accelerations[-1] # None work-gotta stop as fast as possible
 
         acc = lowest_that_works([self.MAX_ACCELERATION,
                                  (self.MAX_ACCELERATION +
-                                       self.COMFORTABLE_ACCELERATION) / 2.0,
+                                      self.COMFORTABLE_ACCELERATION) / 2.0,
                                  self.COMFORTABLE_ACCELERATION,
                                  self.COMFORTABLE_ACCELERATION * 3/4,
                                  self.COMFORTABLE_ACCELERATION * 2/4,
