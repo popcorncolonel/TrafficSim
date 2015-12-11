@@ -6,6 +6,9 @@ from threading import Thread, Lock
 from graph import Graph
 
 class Car(object):
+    ''' Represents a car on a road. Handles logic for how to speed up/slow down
+        based on obstacles in front of it. Naturally speeds up and slows down
+        as a car/driver would in real life. '''
     def __init__(self, road, onchange=lambda:None, init_road_progress=None,
                        destination=None, intersections=None, destinations=None,
                        size=(36, 20), sprite=None):
@@ -60,12 +63,14 @@ class Car(object):
 
 
     def get_directions(self, destination, intersections):
+        ''' Populates the list of intersections for the car to take. '''
         graph = self.populate_intersection_graph(intersections)
         initial_intersection = self.road.end_point
 
         return graph.get_path(initial_intersection, destination)
 
     def populate_intersection_graph(self, intersections):
+        ''' Populates the list of intersections for the car to take. '''
         graph = Graph()
 
         # add each intersection and its connecting roads to the graph
@@ -90,6 +95,7 @@ class Car(object):
             self.prev_car = prev
 
     def loop(self):
+        ''' Internal car loop that the thread is in. '''
         while True:
             time_elapsed = (datetime.datetime.now() -
                             self.last_time).total_seconds()
@@ -97,10 +103,15 @@ class Car(object):
             if not self.active:
                 break
             self.last_time = datetime.datetime.now()
+            # 0.05 timeout for performance (a car doesn't need to update THAT
+            # fast)
             time.sleep(0.05)
 
     # Automatically updates the internal status of the car.
     def __update_status__(self, time_since_last_update=0.1):
+        ''' Internal method the car uses to update its own metadata. '''
+
+        # Helper functions for modularity and separation of concerns
         def update_velocity():
             self.velocity += self.acceleration * time_since_last_update
             self.velocity = max(0, self.velocity)
@@ -126,6 +137,8 @@ class Car(object):
             self.in_intersection = True
 
         def select_next_road():
+            ''' Chooses the next road to go on based on the internal
+                directions. '''
             if len(self.road.end_point.outgoing_edge_set) != 0:
                 # If we have arrived at the destination,
                 #   kill the thread and the Sprite.
@@ -154,6 +167,7 @@ class Car(object):
             self.in_intersection = False
 
         def consider_intersection():
+            ''' Either exits or enters the next intersection. '''
             if self.road_position == self.road.length:
                 print 'uh oh' # deal with intersection
 
@@ -172,6 +186,8 @@ class Car(object):
         self.onchange(self)
 
     def get_obstacle(self):
+        ''' Returns the speed and distance of the next Obstacle (which could
+            either be an Intersection or a Car. '''
         self.can_change_neightbors.acquire()
         # Need to lock; next_car could go out of scope here
         if self.next_car is not None:
@@ -193,6 +209,8 @@ class Car(object):
         return obstacle_speed, dist_to_obstacle
 
     def get_buffer(self, obstacle):
+        ''' Gets the appropriate distance that the car wants to have between
+            it and its obstacle. '''
         proportion = (obstacle.velocity /
                       (self.COMFORTABLE_SPEED * self.road.speed_limit))
         car_lengths = ((self.MAX_CAR_LENGTHS - self.MIN_CAR_LENGTHS) 
@@ -200,6 +218,8 @@ class Car(object):
         return car_lengths * obstacle.length
 
     def desired_acceleration(self):
+        ''' Gets the acceleration that the car wants to go, considering all
+            possible factors. '''
         obstacle_speed, dist_to_obstacle = self.get_obstacle()
         speed_change = abs(self.velocity - obstacle_speed)
 
@@ -232,7 +252,7 @@ class Car(object):
             return 0
 
 
-    # Initially instantaneous acceleration.
+    # Instantaneous acceleration.
     def change_acc_to(self, acceleration, time_since_last_update=0.1):
         modifier = -1 if acceleration < 0 else 1
         desired_acc = min(abs(acceleration), self.MAX_ACCELERATION)

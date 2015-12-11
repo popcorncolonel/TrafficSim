@@ -46,6 +46,7 @@ def main():
         pass
 
 def setup_road_network(master):
+    ''' Creates the entire road network. '''
     intersection1 = master.setup_intersection(scale*(x_offset+100),
                         scale*(y_offset+100), 'intersection.png')
     intersection2 = master.setup_intersection(scale*(x_offset+100),
