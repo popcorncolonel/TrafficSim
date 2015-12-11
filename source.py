@@ -42,7 +42,8 @@ class Source(Intersection):
             if can_spawn:
                 master.setup_car(self, random.choice(car_images), size)
 
-            # choose a spawn delay in a random delay chosen from a normal distribution
+            # choose a spawn delay in a random delay chosen from a normal
+            #  distribution
             spawn_delay = max(0, random.normalvariate(spawn_delay, 1.0))
             time.sleep(spawn_delay)
 
