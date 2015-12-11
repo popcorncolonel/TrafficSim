@@ -18,13 +18,13 @@ Guide to files and contents:
         Used to interact with the pygame module, exports a Window class and a
         Sprite class that inherits from the pygame sprite object.
     graph.py
-        Used by the car module to build a representation of the road network and
-        perform Dijkstra's algorithm to find the shortest distance to the given
-        destination (measured by road length).
+        Used by the car module to build a representation of the road network
+        and perform Dijkstra's algorithm to find the shortest distance to the
+        given destination (measured by road length).
     intersection.py
         Maintains the mutex that prevents multiple cans from being in an
-        intersection at a time.  Each intersection is a vertex, so it has a list
-        of incoming/outgoing roads.
+        intersection at a time.  Each intersection is a vertex, so it has a
+        list of incoming/outgoing roads.
     main.py
         Sets up the road network and interacts with the master object to add
         road network elements.
