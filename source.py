@@ -13,7 +13,7 @@ class Source(Intersection):
         self.cars = set(cars)
         self.generative = generative
         source_thread = threading.Thread(target=self.spawn_loop,
-                                         args=[master, car_images, car_size, spawn_delay])
+                        args=[master, car_images, car_size, spawn_delay])
         source_thread.daemon = True
         source_thread.start()
 

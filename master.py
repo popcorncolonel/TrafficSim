@@ -38,7 +38,8 @@ class Master:
             degs = car.road.angle
             s.set_angle(degs)
             angle_rads = degs * math.pi / 180.0
-            x = car.road_position * math.cos(angle_rads) + car.road.start_point.x
+            x = (car.road_position * math.cos(angle_rads) +
+                 car.road.start_point.x)
             y = self.height - (car.road_position * math.sin(angle_rads) +
                                car.road.start_point.y)
 
