@@ -2,7 +2,7 @@ from collections import defaultdict
 
 # inspired by https://gist.github.com/econchick/4666413
 class Graph:
-''' Used by Car to analyze the road network and perform Dijkstra's algo '''
+    ''' Used by Car to analyze the road network and perform Dijkstra's algo '''
     def __init__(self):
         self.nodes = set()
         self.edges = defaultdict(list)
@@ -19,8 +19,8 @@ class Graph:
         self.distances[(from_node, to_node)] = distance
 
     def dijkstra(graph, initial):
-    ''' perform dijkstra's algorithm, finding the shortest path to all
-        nodes from the initial '''
+        ''' Perform dijkstra's algorithm, finding the shortest path to all
+            nodes from the initial '''
         visited = {initial: 0}
         path = {}
 
@@ -52,8 +52,8 @@ class Graph:
         return path
 
     def get_path(graph, initial, destination):
-    ''' Using the result of dijkstra, use the returned paths to determine
-        the most efficient path to the destination '''
+        ''' Using the result of dijkstra, use the returned paths to determine
+            the most efficient path to the destination '''
 
         # Get shortest path to all nodes.
         all_paths = graph.dijkstra(initial)

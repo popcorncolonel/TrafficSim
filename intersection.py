@@ -19,10 +19,10 @@ class Intersection(Vertex):
         self.name = name
 
     def enter(self):
-    ''' A car acquires the intersection mutex before entering, ensuring
-        only one car can be in the intersection at a given time '''
+        ''' A car acquires the intersection mutex before entering, ensuring
+            only one car can be in the intersection at a given time '''
         self.in_intersection.acquire()
 
     def exit(self):
-    ''' Free up the intersection '''
+        ''' Free up the intersection '''
         self.in_intersection.release()

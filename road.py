@@ -4,8 +4,8 @@ import math
 
 class Road(Edge):
     def __init__(self, start, end, cars=[], speed_limit=220, height=20):
-    ''' initialize the road values, with the 'start' and 'end' params
-        being the intersectiosn on either end of the road '''
+        ''' Initialize the road values, with the 'start' and 'end' params
+            being the intersectiosn on either end of the road '''
         Edge.__init__(self, start, end)
         self.cars = list(cars)
         self.speed_limit = speed_limit
@@ -30,7 +30,7 @@ class Road(Edge):
 
 
     def add_car(self, car, pos=None):
-    ''' Add a Car to the Road, setting its position on the road '''
+        ''' Add a Car to the Road, setting its position on the road '''
         if pos is None:
             pos = 0
             num_cars = len(self.cars)
@@ -70,8 +70,8 @@ class Road(Edge):
             self._remove_car(car)
 
     def _remove_car(self, car):
-    ''' once the mutex has been acquired, remove the car and adjust the
-        remaining cars on the Road '''
+        ''' Once the mutex has been acquired, remove the car and adjust the
+            remaining cars on the Road '''
         if car.next_car is not None:
             car.next_car.set_prev(car.prev_car)
         if car.prev_car is not None:
