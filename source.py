@@ -5,6 +5,7 @@ import time
 import threading
 
 class Source(Intersection):
+''' Spawns cars in an internal loop in random time intervals '''
     def __init__(self, x, y, road, length_along_road, master, car_images,
                        car_size, spawn_delay=2.0, cars=[], generative=False):
         Intersection.__init__(self, x, y, incoming_roads=[])
@@ -12,12 +13,17 @@ class Source(Intersection):
         self.length_along_road = length_along_road
         self.cars = set(cars)
         self.generative = generative
+
+        # set up the car spawning thread
         source_thread = threading.Thread(target=self.spawn_loop,
                         args=[master, car_images, car_size, spawn_delay])
         source_thread.daemon = True
         source_thread.start()
 
     def spawn_loop(self, master, car_images, size, spawn_delay=1.0):
+    ''' Each iteration of the loop checks if there is room on the road
+        to spawn a car, and then waits a random time interval before
+        checking again '''
         while True:
             if self.road is None:
                 continue
@@ -35,6 +41,8 @@ class Source(Intersection):
                     can_spawn = False
             if can_spawn:
                 master.setup_car(self, random.choice(car_images), size)
+
+            # choose a spawn delay in a random delay chosen from a normal distribution
             spawn_delay = max(0, random.normalvariate(spawn_delay, 1.0))
             time.sleep(spawn_delay)
 
@@ -47,9 +55,6 @@ class Source(Intersection):
                             size, sprite)
             self.road.add_car(new_car)
             return new_car
-        else:
-            # remove a car from the set
-            pass
 
 class Destination(Intersection):
     def __init__(self, x, y, destructive=False):
