@@ -99,7 +99,7 @@ class Master:
 
         source = Source(x, y, None, None, self, car_images, car_size,
                         spawn_delay=spawn_delay, generative=generative)
-        road = self.setup_road(source, to_intersection, 'road.png')
+        road = self.setup_road(source, to_intersection, 'road.bmp')
         source.road = road
         source.length_along_road = road.length
         self.source_set.add(source)
@@ -120,7 +120,7 @@ class Master:
         destination = Destination(x, y, destructive)
         # Set up the Destination's incoming and outgoing Roads.
         [road, road2] = self.setup_roads(from_intersection, destination,
-                                         'road.png')
+                                         'road.bmp')
         destination.length_along_road = road.length
 
         self.destination_set.add(destination)
@@ -149,9 +149,9 @@ class Master:
         while angle >= 360.0:
             angle -= 360
 
-        # This is the logic for the direction the png should face.
+        # This is the logic for the direction the bmp should face.
         # It's messy because of the way pygame handles PNG's (position is
-        #   top left corner of the png)
+        #   top left corner of the bmp)
         image_flipped = False
         # DONT ASK
         if 90.0 <= angle < 270.0:
